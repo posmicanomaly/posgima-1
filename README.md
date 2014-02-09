@@ -1,6 +1,6 @@
 Java 7 and Visual C++ 2010 runtime required. JSFML.jar is in lib
 
-Posgima 1 is a "one page game", written in Java to explore and improve my programming skills. This version is basically final, with only refactoring and possibly improving existing features. I purposely kept it simple to just have something finished, as I had always tried to make a game, but was hindered by lack of skills and poor planning. In the future I hope to leverage this project into Posgima 2, which will improve upon the design.
+Posgima 1 is a "one page game" which means I planned it on a single page while at work, written in Java to explore and improve my programming skills. This version is basically final, with only refactoring and possibly improving existing features. I purposely kept it simple to just have something finished, as I had always tried to make a game, but was hindered by lack of skills and poor planning. In the future I hope to leverage this project into Posgima 2, which will improve upon the design.
 
 This project utilizes JSFML as a library for graphics and event handing.<br>
 Worlds are randomly generated, and cannot be saved or loaded at a later time.<br>
