@@ -23,7 +23,7 @@ public class SFMLInputManager {
 	
 	public void pollMiningKeys(Player player)
 	{
-		SFMLUI.messages.add("Mine in which direction? (esc to cancel)\n");
+		
 		
 		//Game.redrawAll();
 		boolean done = false;

@@ -29,8 +29,14 @@ public class Game implements Runnable
 
 	private void continueGame()
 	{
+		//Add a player state, action manager, check the action requested with the state
+		//and then do it here instead, replace the constants
 		if(GameConstants.PLAYER_INTENT_TO_MINE)
+		{
+			SFMLUI.messages.add("Mine in which direction? (esc to cancel)\n");
+			this.redrawAll();
 			input.pollMiningKeys(player);
+		}
 		if(player.movedLastTurn)
 		{
 			player.movedLastTurn = false;
