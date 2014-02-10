@@ -25,7 +25,7 @@ public class SFMLInputManager {
 	{
 		SFMLUI.messages.add("Mine in which direction? (esc to cancel)\n");
 		
-		Game.redrawAll();
+		//Game.redrawAll();
 		boolean done = false;
 		boolean cancel = false;
 		while(!done)
@@ -211,7 +211,7 @@ public class SFMLInputManager {
 					
 				case P:
 					SFMLUI.messages.add("---GENERATING WORLD, THIS COULD TAKE A WHILE---\n");
-					Game.redrawAll();
+					//Game.redrawAll();
 					Game.setNewGame(true);
 					break;
 					

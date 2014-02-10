@@ -4,71 +4,30 @@ import java.util.Random;
 import org.jsfml.graphics.Color;
 
 
-public abstract class Game {
-	public static SFMLRenderWindow window;
-	public static SFMLASCIIRender Renderer;
-	public static MapManager mapManager;
-	public static SFMLInputManager input;
+public class Game 
+{
+	public static boolean isNewGame() {
+		return newGame;
+	}
+	public SFMLRenderWindow window;
+	public SFMLASCIIRender Renderer;
+	public MapManager mapManager;
+	public SFMLInputManager input;
 	public static SFMLUI ui;
-	public static Player player;
-	
-	private static boolean newGame;
-	
-	public static void redrawAll()
-	{
-		window.getRenderWindow().clear(new Color(10, 10, 10));
-		Renderer.renderMap(mapManager.getGameMap(), player);
 
-		//if(GameConstants.DEBUG)
-		//	Renderer.renderWin(mapManager.getGameMap());
-		Renderer.renderPlayer(player);
-		ui.drawSideUI(window.getWorldView(), player);
-		SFMLUI.drawBottomUI();
-		window.getRenderWindow().display();
+	public Player player;
+
+	private static boolean newGame;
+	public static void setNewGame(boolean b) {
+		newGame = b;
 	}
 	public Game()
 	{
-		
+		this.init();
+		this.newGame();
 	}
-	public static void init()
-	{
-		window = new SFMLRenderWindow(GameConstants.FORMATTED_GAME_INFO);//
-		setNewGame(true);
-	}
-	
-	private static void drawUI()
-	{
-		ui.drawSideUI(window.getWorldView(), player);
-		ui.drawBottomUI();
-	}
-	private static void wonGame()
-	{
-		GameConstants.RENDER_REQUIRED = true;
-		if(GameConstants.RENDER_REQUIRED)
-		{
-			window.getRenderWindow().clear(new Color(10, 10, 10));
-			Renderer.winScreen(player);
-			drawUI();
-			window.getRenderWindow().display();
-			GameConstants.RENDER_REQUIRED = false;
-		}
-		input.pollDeathKeyEvents(player);
-	}
-	
-	private static void lostGame()
-	{
-		if(GameConstants.RENDER_REQUIRED)
-		{
-			window.getRenderWindow().clear(new Color(10, 10, 10));
-			Renderer.deathScreen(player);
-			drawUI();
-			window.getRenderWindow().display();
-			GameConstants.RENDER_REQUIRED = false;
-		}
-		input.pollDeathKeyEvents(player);
-	}
-	
-	private static void continueGame()
+
+	private void continueGame()
 	{
 		if(GameConstants.PLAYER_INTENT_TO_MINE)
 			input.pollMiningKeys(player);
@@ -80,19 +39,50 @@ public abstract class Game {
 
 		}
 		if(GameConstants.RENDER_REQUIRED)
-			Game.redrawAll();
+			this.redrawAll();
 		input.pollKeyEvents(player);
 	}
-	private static String getRandomValidTileType()
+	private void drawUI()
+	{
+		ui.drawSideUI(window.getWorldView(), player);
+		ui.drawBottomUI();
+	}
+
+	public void gameLoop()
+	{
+		while(window.isOpen())
+		{
+
+			if(isNewGame())
+			{
+				this.newGame();				
+			}
+			if(GameConstants.won)
+			{
+				wonGame();				
+			}
+			if(player.isAlive())
+			{					
+				continueGame();	
+			}					
+
+			if(!player.isAlive())
+			{
+				lostGame();
+			}			
+		}
+	}
+
+	private String getRandomValidTileType()
 	{
 		Random random = new Random();
 		String type = "";
 		boolean typePresentPassed = false;
-		
+
 		while(!typePresentPassed)
 		{
 			int t = random.nextInt(4);
-			
+
 			switch(t)
 			{
 			case 0:	type = "grass"; break;
@@ -105,58 +95,31 @@ public abstract class Game {
 			{
 				System.out.println(type + " has been found");
 				return type;
-				
+
 			}
 		}
 		return null;
 	}
-	private static void setupWinTile()
-	{		
-		mapManager.getGameMap().getRandomTileByType(getRandomValidTileType()).addItem(new Item("win"));
-	}
-	private static void setupPlayer()
-	{	
-		player = new Player();
-		player.setCurrentMap(mapManager.getGameMap());
-		player.setCurrentTile(player.getCurrentMap().getRandomTileByType(getRandomValidTileType()));
-	}
-	public static void gameLoop()
+	public void init()
 	{
-		while(window.isOpen())
+		window = new SFMLRenderWindow(GameConstants.FORMATTED_GAME_INFO);//
+		setNewGame(true);
+	}
+	private void lostGame()
+	{
+		if(GameConstants.RENDER_REQUIRED)
 		{
-			
-			if(isNewGame())
-			{
-				newGame();				
-			}
-			if(GameConstants.won)
-			{
-				wonGame();				
-			}
-			if(player.isAlive())
-			{					
-				continueGame();	
-			}					
-			
-			if(!player.isAlive())
-			{
-				lostGame();
-			}			
+			window.getRenderWindow().clear(new Color(10, 10, 10));
+			Renderer.deathScreen(player);
+			drawUI();
+			window.getRenderWindow().display();
+			GameConstants.RENDER_REQUIRED = false;
 		}
+		input.pollDeathKeyEvents(player);
 	}
-	
-	private static void setupFood()
+	public void newGame()
 	{
-		//food
-		for(int i = 0; i < GameConstants.MAX_FOOD_SEED; i++)
-		{
-			mapManager.getGameMap().getRandomFoodWorthyTile().addItem(new Item("food"));
-		}
-	}
-	
-	public static void newGame()
-	{
-				
+
 		GameConstants.won = false;
 		Renderer = new SFMLASCIIRender(window);
 		mapManager = new MapManager();
@@ -179,15 +142,54 @@ public abstract class Game {
 		setupPlayer();
 		setupWinTile();
 		setupFood();		
-		
+
 		GameConstants.RENDER_REQUIRED = true;
 		setNewGame(false);
 	}
-	public static boolean isNewGame() {
-		return newGame;
+	public void redrawAll()
+	{
+		window.getRenderWindow().clear(new Color(10, 10, 10));
+		Renderer.renderMap(mapManager.getGameMap(), player);
+
+		//if(GameConstants.DEBUG)
+		//	Renderer.renderWin(mapManager.getGameMap());
+		Renderer.renderPlayer(player);
+		ui.drawSideUI(window.getWorldView(), player);
+		SFMLUI.drawBottomUI();
+		window.getRenderWindow().display();
 	}
-	public static void setNewGame(boolean b) {
-		newGame = b;
+
+	private void setupFood()
+	{
+		//food
+		for(int i = 0; i < GameConstants.MAX_FOOD_SEED; i++)
+		{
+			mapManager.getGameMap().getRandomFoodWorthyTile().addItem(new Item("food"));
+		}
 	}
-	
+
+	private void setupPlayer()
+	{	
+		player = new Player();
+		player.setCurrentMap(mapManager.getGameMap());
+		player.setCurrentTile(player.getCurrentMap().getRandomTileByType(getRandomValidTileType()));
+	}
+	private void setupWinTile()
+	{		
+		mapManager.getGameMap().getRandomTileByType(getRandomValidTileType()).addItem(new Item("win"));
+	}
+	private void wonGame()
+	{
+		GameConstants.RENDER_REQUIRED = true;
+		if(GameConstants.RENDER_REQUIRED)
+		{
+			window.getRenderWindow().clear(new Color(10, 10, 10));
+			Renderer.winScreen(player);
+			drawUI();
+			window.getRenderWindow().display();
+			GameConstants.RENDER_REQUIRED = false;
+		}
+		input.pollDeathKeyEvents(player);
+	}
+
 }
