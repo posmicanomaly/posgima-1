@@ -35,6 +35,12 @@ public abstract class Game {
 		window = new SFMLRenderWindow(GameConstants.FORMATTED_GAME_INFO);//
 		setNewGame(true);
 	}
+	
+	private static void drawUI()
+	{
+		ui.drawSideUI(window.getWorldView(), player);
+		ui.drawBottomUI();
+	}
 	private static void wonGame()
 	{
 		GameConstants.RENDER_REQUIRED = true;
@@ -42,8 +48,7 @@ public abstract class Game {
 		{
 			window.getRenderWindow().clear(new Color(10, 10, 10));
 			Renderer.winScreen(player);
-			ui.drawSideUI(window.getWorldView(), player);
-			ui.drawBottomUI();
+			drawUI();
 			window.getRenderWindow().display();
 			GameConstants.RENDER_REQUIRED = false;
 		}
@@ -56,8 +61,7 @@ public abstract class Game {
 		{
 			window.getRenderWindow().clear(new Color(10, 10, 10));
 			Renderer.deathScreen(player);
-			ui.drawSideUI(window.getWorldView(), player);
-			ui.drawBottomUI();
+			drawUI();
 			window.getRenderWindow().display();
 			GameConstants.RENDER_REQUIRED = false;
 		}
@@ -79,7 +83,43 @@ public abstract class Game {
 			Game.redrawAll();
 		input.pollKeyEvents(player);
 	}
-	
+	private static String getRandomValidTileType()
+	{
+		Random random = new Random();
+		String type = "";
+		boolean typePresentPassed = false;
+		
+		while(!typePresentPassed)
+		{
+			int t = random.nextInt(4);
+			
+			switch(t)
+			{
+			case 0:	type = "grass"; break;
+			case 1: type = "forest"; break;
+			case 2: type = "desert"; break;
+			case 3: type = "hill"; break;
+			}
+			System.out.println(type + " searching...");
+			if(mapManager.getGameMap().hasTileType(type))
+			{
+				System.out.println(type + " has been found");
+				return type;
+				
+			}
+		}
+		return null;
+	}
+	private static void setupWinTile()
+	{		
+		mapManager.getGameMap().getRandomTileByType(getRandomValidTileType()).addItem(new Item("win"));
+	}
+	private static void setupPlayer()
+	{	
+		player = new Player();
+		player.setCurrentMap(mapManager.getGameMap());
+		player.setCurrentTile(player.getCurrentMap().getRandomTileByType(getRandomValidTileType()));
+	}
 	public static void gameLoop()
 	{
 		while(window.isOpen())
@@ -105,10 +145,18 @@ public abstract class Game {
 		}
 	}
 	
+	private static void setupFood()
+	{
+		//food
+		for(int i = 0; i < GameConstants.MAX_FOOD_SEED; i++)
+		{
+			mapManager.getGameMap().getRandomFoodWorthyTile().addItem(new Item("food"));
+		}
+	}
+	
 	public static void newGame()
 	{
-		Random random = new Random();
-		String type = null;
+				
 		GameConstants.won = false;
 		Renderer = new SFMLASCIIRender(window);
 		mapManager = new MapManager();
@@ -128,56 +176,9 @@ public abstract class Game {
 				+ "(K) to toggle keyrepeat(not recommended)\n"
 				+ "(-) to decrease the map, (=) to increase it, followed by (P) to regenerate(huge maps take a long time to build)\n");
 		//mapManager = new MapManager();
-		player = new Player();
-		player.setCurrentMap(mapManager.getGameMap());
-		boolean typePresentPassed = false;
-		type = null;
-		while(!typePresentPassed)
-		{
-			int t = random.nextInt(4);
-			
-			switch(t)
-			{
-			case 0:	type = "grass"; break;
-			case 1: type = "forest"; break;
-			case 2: type = "desert"; break;
-			case 3: type = "hill"; break;
-			}
-			System.out.println(type + " searching(player)...");
-			if(mapManager.getGameMap().hasTileType(type))
-			{
-				System.out.println(type + " has been found(player)");
-				typePresentPassed = true;
-			}
-		}
-		player.setCurrentTile(player.getCurrentMap().getRandomTileByType(type));
-		
-		typePresentPassed = false;
-		;
-		while(!typePresentPassed)
-		{
-			int t = random.nextInt(4);
-			
-			switch(t)
-			{
-			case 0:	type = "grass"; break;
-			case 1: type = "forest"; break;
-			case 2: type = "desert"; break;
-			case 3: type = "hill"; break;
-			}
-			System.out.println(type + " searching...");
-			if(mapManager.getGameMap().hasTileType(type))
-			{
-				System.out.println(type + " has been found");
-				typePresentPassed = true;
-			}
-		}
-		mapManager.getGameMap().getRandomTileByType(type).addItem(new Item("win"));
-		//food
-		for(int i = 0; i < GameConstants.MAX_FOOD_SEED; i++)
-		{
-			mapManager.getGameMap().getRandomFoodWorthyTile().addItem(new Item("food"));
-		}
+		setupPlayer();
+		setupWinTile();
+		setupFood();		
 		
 		GameConstants.RENDER_REQUIRED = true;
 		setNewGame(false);
