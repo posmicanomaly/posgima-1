@@ -4,7 +4,7 @@ import java.util.Random;
 import org.jsfml.graphics.Color;
 
 
-public class Game 
+public class Game implements Runnable
 {
 	public static boolean isNewGame() {
 		return newGame;
@@ -144,6 +144,9 @@ public class Game
 		setupFood();		
 
 		GameConstants.RENDER_REQUIRED = true;
+		
+		this.redrawAll();
+		//new Thread(this).start();
 		setNewGame(false);
 	}
 	public void redrawAll()
@@ -190,6 +193,15 @@ public class Game
 			GameConstants.RENDER_REQUIRED = false;
 		}
 		input.pollDeathKeyEvents(player);
+	}
+	@Override
+	public void run() {
+		if(GameConstants.RENDER_REQUIRED)
+		{
+			System.out.println("running");
+			this.redrawAll();
+			GameConstants.RENDER_REQUIRED = false;
+		}
 	}
 
 }

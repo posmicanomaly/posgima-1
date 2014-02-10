@@ -6,6 +6,8 @@ public class Main
 	{		
 		//SettingsImporter settings = new SettingsImporter();
 		Game game = new Game();
-		game.gameLoop();	
+		
+		game.gameLoop();
+		
 	}
 }
