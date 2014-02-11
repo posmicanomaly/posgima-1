@@ -36,18 +36,37 @@ public class Game implements Runnable
 		
 		if(a.isMine())
 		{
-			ui.messages.add("Mine in which direction? (esc to cancel)\n");
-			this.redrawAll();
-			if(input.pollMiningKeys(player))
+			if(!player.isMining())
 			{
-				this.ui.messages.add("You mined through the mountain!\n");
+				ui.messages.add("Mine in which direction? (esc to cancel)\n");
+				this.redrawAll();
+				player.setMining(true);
+				
 			}
-			else
+			if(player.isMining())
 			{
-				this.ui.messages.add("Too hungry to mine right now..\n");
+				if(player.isMiningSuccess())
+				{
+					
+					if(player.mine())
+					{
+						this.ui.messages.add("You mined through the mountain!\n");
+						player.getLookingAt().setType("road");
+						player.getLookingAt().setPassableFlag(true);
+					}
+					else
+					{
+						this.ui.messages.add("Too hungry to mine..\n");
+						
+					}
+					a.setMine(false);
+					player.setMining(false);
+					
+					
+				}
+							
 			}
-			a.setMine(false);
-			GameConstants.RENDER_REQUIRED = true;
+			GameConstants.RENDER_REQUIRED = true;	
 		}
 		
 		if(a.isDig())
@@ -128,7 +147,7 @@ public class Game implements Runnable
 
 	private void continueGame()
 	{
-		this.processActions();
+		
 		
 		if(player.movedLastTurn)
 		{
@@ -139,7 +158,11 @@ public class Game implements Runnable
 		}
 		if(GameConstants.RENDER_REQUIRED)
 			this.redrawAll();
-		input.pollKeyEvents(player);
+		if(this.actionHandler.isMine())
+			input.pollMiningKeys(player);
+		else
+			input.pollKeyEvents(player);
+		this.processActions();
 	}
 	private void drawUI()
 	{

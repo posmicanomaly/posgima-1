@@ -21,99 +21,68 @@ public class SFMLInputManager {
 		this.actionHandler = actionHandler;
 	}
 	
-	public boolean pollMiningKeys(Player player)
+	public void pollMiningKeys(Player player)
 	{
-		
-		
+
+
 		//Game.redrawAll();
 		boolean done = false;		
-		while(!done)
+		//while(!done)
+		//{
+		for(Event event : this.window.pollEvents())
 		{
-			for(Event event : this.window.pollEvents())
+			if(event.type == Event.Type.KEY_PRESSED)
 			{
-				if(event.type == Event.Type.KEY_PRESSED)
+
+				Tile tile = null;
+				KeyEvent keyEvent = event.asKeyEvent();
+				switch(keyEvent.key)
 				{
+				case ESCAPE:
+					this.actionHandler.setMine(false);
+					player.setMining(false);
+					return;						
+
+				case UP:
+					tile = player.getCurrentMap().getTileFromCoords(player.getCurrentTile().getX(), player.getCurrentTile().getY() - GameConstants.DEFAULT_FONT_SIZE);
 					
-					Tile tile = null;
-					KeyEvent keyEvent = event.asKeyEvent();
-					switch(keyEvent.key)
-					{
-					case ESCAPE:
-						
-						return false;						
+					break;
 
-					case UP:
-						tile = player.getCurrentMap().getTileFromCoords(player.getCurrentTile().getX(), player.getCurrentTile().getY() - GameConstants.DEFAULT_FONT_SIZE);
-						if(tile == null)
-						{
-							return false;							
-						}
-						if(!player.getCurrentMap().checkTerrainCollision(tile) && tile.getType() == "mountain")
-						{
-							tile.setType("road");
-							tile.setPassableFlag(true);
-							done = true;
-						}						
-						
-						break;
+				case DOWN:
+					tile = player.getCurrentMap().getTileFromCoords(player.getCurrentTile().getX(), player.getCurrentTile().getY() + GameConstants.DEFAULT_FONT_SIZE);
+					break;
 
-					case DOWN:
-						tile = player.getCurrentMap().getTileFromCoords(player.getCurrentTile().getX(), player.getCurrentTile().getY() + GameConstants.DEFAULT_FONT_SIZE);
-						if(tile == null)
-						{
-							return false;							
-						}
-						if(!player.getCurrentMap().checkTerrainCollision(tile) && tile.getType() == "mountain")
-						{
-							tile.setType("road");
-							tile.setPassableFlag(true);
-							done = true;
-						}
-						
-						break;
+				case RIGHT:
+					tile = player.getCurrentMap().getTileFromCoords(player.getCurrentTile().getX() + GameConstants.DEFAULT_FONT_SIZE, player.getCurrentTile().getY());
+					break;
 
-					case RIGHT:
-						tile = player.getCurrentMap().getTileFromCoords(player.getCurrentTile().getX() + GameConstants.DEFAULT_FONT_SIZE, player.getCurrentTile().getY());
-						if(tile == null)
-						{
-							return false;							
-						}
-						if(!player.getCurrentMap().checkTerrainCollision(tile) && tile.getType() == "mountain")
-						{
-							tile.setType("road");
-							tile.setPassableFlag(true);
-							done = true;
-						}
-						
-						break;
-
-					case LEFT:
-						tile = player.getCurrentMap().getTileFromCoords(player.getCurrentTile().getX() - GameConstants.DEFAULT_FONT_SIZE, player.getCurrentTile().getY());
-						if(tile == null)
-						{
-							return false;							
-						}
-						if(!player.getCurrentMap().checkTerrainCollision(tile) && tile.getType() == "mountain")
-						{
-							tile.setType("road");
-							tile.setPassableFlag(true);
-							done = true;
-						}
-						
-						break;
-					}					
-				}				
-				if(done)
+				case LEFT:
+					tile = player.getCurrentMap().getTileFromCoords(player.getCurrentTile().getX() - GameConstants.DEFAULT_FONT_SIZE, player.getCurrentTile().getY());
+					break;
+				}
+				
+				if(tile == null)
 				{
-					player.mine();
-					return true;
-				}				
-			}			
+					return;							
+				}
+				if(!player.getCurrentMap().checkTerrainCollision(tile) && tile.getType() == "mountain")
+				{					
+					player.setMiningSuccess(true);
+					player.setLookingAt(tile);
+					//return true;
+				}
+			}				
+			//if(done)
+			//{
+			//player.mine();
+			
+			//}				
+			//}			
 		}
-		return false;
+		
 
 	}
-	
+
 	public void pollKeyEvents(Player player)
 	{
 		for(Event event : this.window.pollEvents())
@@ -181,9 +150,8 @@ public class SFMLInputManager {
 					GameConstants.toggleKeyRepeat(SFMLWindow);
 					break;
 					
-				case M:
-					if(player.getHungerLevel() <= 5)
-						this.actionHandler.setMine(true);					
+				case M:					
+					this.actionHandler.setMine(true);					
 					break;
 					
 				case E:

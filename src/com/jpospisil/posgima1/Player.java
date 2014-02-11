@@ -6,11 +6,14 @@ import java.util.Random;
 public class Player {
 
 	private Tile currentTile;
+	private Tile lookingAt;
 	private GameMap currentMap;
 	public boolean movedLastTurn;
 	
 	private String name;
 	private boolean alive;
+	private boolean isMining;
+	private boolean miningSuccess;
 	private int moves;
 	private int digCount;
 	private int foodCount;
@@ -20,6 +23,7 @@ public class Player {
 	public Player() {
 		currentTile = null;
 		currentMap = null;
+		this.lookingAt = null;
 		
 		this.name = "Player the playa hata";
 		this.moves = 0;
@@ -27,6 +31,8 @@ public class Player {
 		this.foodCount = 0;
 		this.hungerLevel = 0;
 		this.health = 100;
+		this.isMining = false;
+		this.miningSuccess = false;
 		
 		this.alive = true;
 		// TODO Auto-generated constructor stub
@@ -35,12 +41,20 @@ public class Player {
 	{
 		return this.alive;
 	}
-	public void mine()
+	public boolean mine()
 	{
 		//SFMLUI.messages.add("You mined the mountain, clearing a path!\n");
-		this.hungerLevel +=4;
-		if(this.hungerLevel > 10)
-			this.hungerLevel = 10;
+		this.miningSuccess = false;
+		if(this.getHungerLevel() <= 5)
+		{
+			this.hungerLevel +=4;
+			if(this.hungerLevel > 10)
+				this.hungerLevel = 10;
+			return true;
+		}
+		else
+			return false;
+		
 	}
 	private void die()
 	{		
@@ -278,6 +292,24 @@ public class Player {
 		//else
 			//SFMLUI.messages.add("Too hungry to sleep\n");
 		
+	}
+	public boolean isMining() {
+		return isMining;
+	}
+	public void setMining(boolean isMining) {
+		this.isMining = isMining;
+	}
+	public boolean isMiningSuccess() {
+		return miningSuccess;
+	}
+	public void setMiningSuccess(boolean miningSuccess) {
+		this.miningSuccess = miningSuccess;
+	}
+	public Tile getLookingAt() {
+		return lookingAt;
+	}
+	public void setLookingAt(Tile lookingAt) {
+		this.lookingAt = lookingAt;
 	}
 	
 }
