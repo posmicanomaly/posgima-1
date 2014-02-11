@@ -7,27 +7,26 @@ import org.jsfml.window.event.KeyEvent;
 
 public class SFMLInputManager {
 
-	
-	private GameMap gameMap;
+	private ActionHandler actionHandler;
+	//private GameMap gameMap;
 	private SFMLASCIIRender render;
 	private SFMLRenderWindow SFMLWindow;
 	private RenderWindow window;
-	private Player player;
+	//private Player player;
 	
 	
-	public SFMLInputManager(SFMLRenderWindow sfmlRenderWindow, GameMap gameMap) {
+	public SFMLInputManager(SFMLRenderWindow sfmlRenderWindow, ActionHandler actionHandler) {
 		SFMLWindow = sfmlRenderWindow;
 		window = sfmlRenderWindow.getRenderWindow();
-		this.gameMap = gameMap;
+		this.actionHandler = actionHandler;
 	}
 	
-	public void pollMiningKeys(Player player)
+	public boolean pollMiningKeys(Player player)
 	{
 		
 		
 		//Game.redrawAll();
-		boolean done = false;
-		boolean cancel = false;
+		boolean done = false;		
 		while(!done)
 		{
 			for(Event event : this.window.pollEvents())
@@ -41,16 +40,13 @@ public class SFMLInputManager {
 					{
 					case ESCAPE:
 						
-						cancel = true;
-						break;
+						return false;						
 
 					case UP:
-						
 						tile = player.getCurrentMap().getTileFromCoords(player.getCurrentTile().getX(), player.getCurrentTile().getY() - GameConstants.DEFAULT_FONT_SIZE);
 						if(tile == null)
 						{
-							cancel = true;
-							break;
+							return false;							
 						}
 						if(!player.getCurrentMap().checkTerrainCollision(tile) && tile.getType() == "mountain")
 						{
@@ -65,8 +61,7 @@ public class SFMLInputManager {
 						tile = player.getCurrentMap().getTileFromCoords(player.getCurrentTile().getX(), player.getCurrentTile().getY() + GameConstants.DEFAULT_FONT_SIZE);
 						if(tile == null)
 						{
-							cancel = true;
-							break;
+							return false;							
 						}
 						if(!player.getCurrentMap().checkTerrainCollision(tile) && tile.getType() == "mountain")
 						{
@@ -81,8 +76,7 @@ public class SFMLInputManager {
 						tile = player.getCurrentMap().getTileFromCoords(player.getCurrentTile().getX() + GameConstants.DEFAULT_FONT_SIZE, player.getCurrentTile().getY());
 						if(tile == null)
 						{
-							cancel = true;
-							break;
+							return false;							
 						}
 						if(!player.getCurrentMap().checkTerrainCollision(tile) && tile.getType() == "mountain")
 						{
@@ -97,8 +91,7 @@ public class SFMLInputManager {
 						tile = player.getCurrentMap().getTileFromCoords(player.getCurrentTile().getX() - GameConstants.DEFAULT_FONT_SIZE, player.getCurrentTile().getY());
 						if(tile == null)
 						{
-							cancel = true;
-							break;
+							return false;							
 						}
 						if(!player.getCurrentMap().checkTerrainCollision(tile) && tile.getType() == "mountain")
 						{
@@ -109,25 +102,18 @@ public class SFMLInputManager {
 						
 						break;
 					}					
-				}
-				if(cancel)
-					break;
+				}				
 				if(done)
 				{
 					player.mine();
-				}
-				
-			}
-			if(cancel)
-			{
-				SFMLUI.messages.add("cancelled\n");
-			
-				break;
-			}
-			GameConstants.PLAYER_INTENT_TO_MINE = false;
+					return true;
+				}				
+			}			
 		}
+		return false;
 
 	}
+	
 	public void pollKeyEvents(Player player)
 	{
 		for(Event event : this.window.pollEvents())
@@ -160,59 +146,35 @@ public class SFMLInputManager {
 					break;
 					
 				case EQUAL:
-					//SFMLWindow.setZoom(SFMLWindow.getWorldView(), .5f);
-					GameConstants.MAP_GENERATOR_COLS += 20;
-					GameConstants.MAP_GENERATOR_ROWS += 20;
-					GameConstants.resetSeedValues();
-					SFMLUI.messages.add("Increased map size, press (P) to generate new world!" + GameConstants.MAP_GENERATOR_ROWS + "x" + GameConstants.MAP_GENERATOR_COLS + ")\n");
-					GameConstants.RENDER_REQUIRED = true;
-					
+					this.actionHandler.setIncreaseMapSize(true);					
 					break;
 					
-				case DASH:					
-					//SFMLWindow.setZoom(SFMLWindow.getWorldView(), 2.f);
-					GameConstants.MAP_GENERATOR_COLS -= 20;
-					GameConstants.MAP_GENERATOR_ROWS -= 20;
-					GameConstants.resetSeedValues();
-					SFMLUI.messages.add("Decreased map size, press (P) to generate new world!(" + GameConstants.MAP_GENERATOR_ROWS + "x" + GameConstants.MAP_GENERATOR_COLS + ")\n");
-					GameConstants.RENDER_REQUIRED = true;
+				case DASH:
+					this.actionHandler.setDecreaseMapSize(true);					
 					break;
 					
 				case S:
 					if(player.getCurrentTile().getType() == "house")
-					{
-						player.sleep();						
-					}
+						this.actionHandler.setSleep(true);
 					break;
 					
 				case H:
 					if(player.getCurrentTile().getType() != "water" && player.getCurrentTile().getType() != "house")
-					{
-						player.buildHouse();
-						player.setMovedLastTurn(true);
-					}
+						this.actionHandler.setBuildHouse(true);
 					break;
 					
 				case R:
 					if(player.getCurrentTile().getType() != "water" && player.getCurrentTile().getType() != "road" && player.getCurrentTile().getType() != "house")
-					{
-						player.buildRoad();					
-						player.setMovedLastTurn(true);
-					}
+						this.actionHandler.setBuildRoad(true);					
 					break;
 					
 				case D:
 					if(player.getCurrentTile().getType() != "water")
-					{
-						player.dig();
-						player.setMovedLastTurn(true);
-					}
+						this.actionHandler.setDig(true);
 					break;
 					
 				case P:
-					SFMLUI.messages.add("---GENERATING WORLD, THIS COULD TAKE A WHILE---\n");
-					//Game.redrawAll();
-					Game.setNewGame(true);
+					this.actionHandler.setRegenerateMap(true);					
 					break;
 					
 				case K:
@@ -221,10 +183,7 @@ public class SFMLInputManager {
 					
 				case M:
 					if(player.getHungerLevel() <= 5)
-						GameConstants.PLAYER_INTENT_TO_MINE = true;
-					else
-						SFMLUI.messages.add("Too hungry to mine...\n");
-					GameConstants.RENDER_REQUIRED = true;
+						this.actionHandler.setMine(true);					
 					break;
 					
 				case E:
@@ -255,7 +214,7 @@ public class SFMLInputManager {
 					this.window.close();
 					break;
 				case P:
-					Game.setNewGame(true);
+					this.actionHandler.setRegenerateMap(true);					
 					break;
 				}
 			}

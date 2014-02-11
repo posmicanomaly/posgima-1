@@ -6,19 +6,20 @@ import org.jsfml.graphics.Color;
 
 public class Game implements Runnable
 {
-	public static boolean isNewGame() {
+	public boolean isNewGame() {
 		return newGame;
 	}
+	private ActionHandler actionHandler;
 	public SFMLRenderWindow window;
 	public SFMLASCIIRender Renderer;
 	public MapManager mapManager;
 	public SFMLInputManager input;
-	public static SFMLUI ui;
+	public SFMLUI ui;
 
 	public Player player;
 
-	private static boolean newGame;
-	public static void setNewGame(boolean b) {
+	private boolean newGame;
+	public void setNewGame(boolean b) {
 		newGame = b;
 	}
 	public Game()
@@ -27,16 +28,107 @@ public class Game implements Runnable
 		this.newGame();
 	}
 
-	private void continueGame()
+	private void processActions()
 	{
+		ActionHandler a = this.actionHandler;
 		//Add a player state, action manager, check the action requested with the state
 		//and then do it here instead, replace the constants
-		if(GameConstants.PLAYER_INTENT_TO_MINE)
+		
+		if(a.isMine())
 		{
-			SFMLUI.messages.add("Mine in which direction? (esc to cancel)\n");
+			ui.messages.add("Mine in which direction? (esc to cancel)\n");
 			this.redrawAll();
-			input.pollMiningKeys(player);
+			if(input.pollMiningKeys(player))
+			{
+				this.ui.messages.add("You mined through the mountain!\n");
+			}
+			else
+			{
+				this.ui.messages.add("Too hungry to mine right now..\n");
+			}
+			a.setMine(false);
+			GameConstants.RENDER_REQUIRED = true;
 		}
+		
+		if(a.isDig())
+		{
+			player.dig();
+			a.setDig(false);
+			player.setMovedLastTurn(true);			
+		}
+		
+		if(a.isBuildRoad())
+		{
+			if(!player.buildRoad())
+			{
+				this.ui.messages.add("Too hungry to make a road..\n");
+				this.redrawAll();
+			}
+			else
+			{
+				this.ui.messages.add("You clear the terrain, creating a road\n");			
+				player.setMovedLastTurn(true);
+			}
+			a.setBuildRoad(false);
+		}
+		
+		if(a.isBuildHouse())
+		{
+			if(!player.buildHouse())
+			{
+				this.ui.messages.add("Too hungry to build a house..\n");
+				this.redrawAll();
+			}
+			else
+			{
+				this.ui.messages.add("You built a house\n");				
+				player.setMovedLastTurn(true);
+			}
+			a.setBuildHouse(false);
+		}
+		if(a.isSleep())
+		{
+			if(!player.sleep())
+			{
+				this.ui.messages.add("Too Hungry To Sleep\n");
+				this.redrawAll();
+			}
+			a.setSleep(false);
+		}
+		
+		if(a.isIncreaseMapSize())
+		{			
+			GameConstants.MAP_GENERATOR_COLS += 20;
+			GameConstants.MAP_GENERATOR_ROWS += 20;
+			GameConstants.resetSeedValues();
+			this.ui.messages.add("Increased map size, press (P) to generate new world!" + GameConstants.MAP_GENERATOR_ROWS + "x" + GameConstants.MAP_GENERATOR_COLS + ")\n");
+			GameConstants.RENDER_REQUIRED = true;
+			a.setIncreaseMapSize(false);
+		}
+		
+		if(a.isDecreaseMapSize())
+		{			
+			GameConstants.MAP_GENERATOR_COLS -= 20;
+			GameConstants.MAP_GENERATOR_ROWS -= 20;
+			GameConstants.resetSeedValues();
+			this.ui.messages.add("Decreased map size, press (P) to generate new world!(" + GameConstants.MAP_GENERATOR_ROWS + "x" + GameConstants.MAP_GENERATOR_COLS + ")\n");
+			GameConstants.RENDER_REQUIRED = true;
+			a.setDecreaseMapSize(false);
+		}
+		
+		if(a.isRegenerateMap())
+		{
+			this.ui.messages.add("---GENERATING WORLD, THIS COULD TAKE A WHILE---\n");
+			this.redrawAll();
+			this.setNewGame(true);
+			a.setRegenerateMap(false);
+		}
+	}
+
+	private void continueGame()
+	{
+		this.processActions();
+		
 		if(player.movedLastTurn)
 		{
 			player.movedLastTurn = false;
@@ -125,15 +217,15 @@ public class Game implements Runnable
 	}
 	public void newGame()
 	{
-
+		this.actionHandler = new ActionHandler();
 		GameConstants.won = false;
 		Renderer = new SFMLASCIIRender(window);
 		mapManager = new MapManager();
-		input = new SFMLInputManager(window, mapManager.getGameMap());
+		input = new SFMLInputManager(window, this.actionHandler);
 		ui = new SFMLUI(window);
-		SFMLUI.messages.clear();
-		SFMLUI.messages.add("new game\n");
-		SFMLUI.messages.add("------------------------------------------\n"
+		ui.messages.clear();
+		ui.messages.add("new game\n");
+		ui.messages.add("------------------------------------------\n"
 				+ "You awake in a strange land, (D)ig for the buried artifact!\n"
 				+ "(D)ig for Food to avoid starvation! Don't forget to (E)at it!\n"
 				+ "(M)ountains are no (M)atch for you!\n"
@@ -155,6 +247,7 @@ public class Game implements Runnable
 		//new Thread(this).start();
 		setNewGame(false);
 	}
+	
 	public void redrawAll()
 	{
 		window.getRenderWindow().clear(new Color(10, 10, 10));
@@ -163,8 +256,7 @@ public class Game implements Runnable
 		//if(GameConstants.DEBUG)
 		//	Renderer.renderWin(mapManager.getGameMap());
 		Renderer.renderPlayer(player);
-		ui.drawSideUI(window.getWorldView(), player);
-		SFMLUI.drawBottomUI();
+		this.drawUI();
 		window.getRenderWindow().display();
 	}
 

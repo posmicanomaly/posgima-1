@@ -10,12 +10,13 @@ import org.jsfml.window.VideoMode;
 
 public class SFMLUI {
 
-	public static ArrayList<String> messages = new ArrayList<String>();	
+	public ArrayList<String> messages = new ArrayList<String>();	
 	
-	private static SFMLRenderWindow window;
+	private SFMLRenderWindow window;
 	private View sideView;
-	private static View bottomView;
-	public SFMLUI(SFMLRenderWindow window) {
+	private View bottomView;
+	public SFMLUI(SFMLRenderWindow window) 
+	{
 		this.window = window;
 		sideView = new View(window.getRenderWindow().getDefaultView().getCenter(), window.getRenderWindow().getDefaultView().getSize());
 		bottomView = new View(window.getRenderWindow().getDefaultView().getCenter(), window.getRenderWindow().getDefaultView().getSize());
@@ -26,7 +27,7 @@ public class SFMLUI {
 	}
 	//currentview is used to reset it after
 	
-	public static void drawBottomUI()
+	public void drawBottomUI()
 	{
 		window.getRenderWindow().setView(bottomView);
 		String madeMessage = "";

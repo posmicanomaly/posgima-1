@@ -37,7 +37,7 @@ public class Player {
 	}
 	public void mine()
 	{
-		SFMLUI.messages.add("You mined the mountain, clearing a path!\n");
+		//SFMLUI.messages.add("You mined the mountain, clearing a path!\n");
 		this.hungerLevel +=4;
 		if(this.hungerLevel > 10)
 			this.hungerLevel = 10;
@@ -65,7 +65,7 @@ public class Player {
 			if(this.hungerLevel < 0)
 				this.hungerLevel = 0;
 			this.setFoodCount(this.getFoodCount() - 1);
-			SFMLUI.messages.add("You eat some food, you feel less hungry!\n");
+			//SFMLUI.messages.add("You eat some food, you feel less hungry!\n");
 			GameConstants.RENDER_REQUIRED = true;
 		}
 	}
@@ -78,14 +78,14 @@ public class Player {
 				Item i = item.next();
 				if(i.getName() == "win")
 				{
-					SFMLUI.messages.add("YOU WIN\n");
+					//SFMLUI.messages.add("YOU WIN\n");
 					GameConstants.won = true;
 					item.remove();
 					break;
 				}
 				else if(i.getName() == "food")
 				{
-					SFMLUI.messages.add("Found some food!\n");
+					//SFMLUI.messages.add("Found some food!\n");
 					this.setFoodCount(this.getFoodCount() + 1);
 					item.remove();
 					break;
@@ -167,7 +167,7 @@ public class Player {
 			}
 			else
 			{
-				SFMLUI.messages.add("that " + nextTile.getType() + " hurt\n");
+				//SFMLUI.messages.add("that " + nextTile.getType() + " hurt\n");
 				return false;
 			}
 		}
@@ -240,35 +240,43 @@ public class Player {
 	public boolean isMovedLastTurn() {
 		return movedLastTurn;
 	}
-	public void buildRoad() {
+	public boolean buildRoad() {
 		if(this.getHungerLevel() > 5)
 		{
-			SFMLUI.messages.add("Too hungry to make a road..\n");
-			return;
+			//
+			return false;
 		}
 		this.getCurrentTile().setType("road");
 		this.setHungerLevel(this.getHungerLevel() + 3);
 		if(this.getHungerLevel() > 10)
 			this.setHungerLevel(10);
+		return true;
 		
 	}
-	public void buildHouse() {
+	public boolean buildHouse() 
+	{
 		if(this.getHungerLevel() > 0)
 		{
-			SFMLUI.messages.add("Too hungry to build a house..\n");
-			return;
+			//SFMLUI.messages.add("Too hungry to build a house..\n");
+			return false;
 		}
-		this.getCurrentTile().setType("house");
-		this.setHungerLevel(10);
+		else
+		{
+			this.getCurrentTile().setType("house");
+			this.setHungerLevel(10);
+			return true;
 		}
-	public void sleep() {
+	}
+	public boolean sleep() {
 		if(this.getHungerLevel() < 10)
 		{
 			this.setHealth(this.getHealth() + 1);
 			this.setMovedLastTurn(true);
+			return true;
 		}
-		else
-			SFMLUI.messages.add("Too hungry to sleep\n");
+		return false;
+		//else
+			//SFMLUI.messages.add("Too hungry to sleep\n");
 		
 	}
 	
