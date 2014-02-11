@@ -5,17 +5,9 @@ import java.util.ArrayList;
 public class ActionHandler {
 
 	private ArrayList<Boolean> actions;
-	private boolean mine,
-				   buildRoad,
-				   eat,
-				   dig,
-				   swim,
-				   buildHouse,
-				   sleep,
-				   increaseMapSize,
-				   decreaseMapSize,
-				   regenerateMap;
-				   
+	private boolean mine, buildRoad, eat, dig, swim, buildHouse, sleep,
+			increaseMapSize, decreaseMapSize, regenerateMap;
+
 	public ActionHandler() {
 		this.actions = new ArrayList<Boolean>();
 		this.mine = false;
@@ -28,13 +20,13 @@ public class ActionHandler {
 		this.increaseMapSize = false;
 		this.decreaseMapSize = false;
 		this.regenerateMap = false;
-		
+
 		this.actions.add(mine);
 		this.actions.add(buildRoad);
 		this.actions.add(eat);
 		this.actions.add(swim);
 		this.actions.add(buildHouse);
-		this.actions.add(sleep);		
+		this.actions.add(sleep);
 	}
 
 	public ArrayList<Boolean> getActions() {
