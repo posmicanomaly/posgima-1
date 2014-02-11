@@ -18,6 +18,11 @@ public class SFMLFont {
 		loadFontFromFile(defaultFont, "resources/cour.ttf");
 	}
 	
+	public Font getDefaultFont()
+	{
+		return this.defaultFont;
+	}
+	
 	private void loadFontFromFile(Font font, String path)
 	{
 		try
@@ -28,10 +33,5 @@ public class SFMLFont {
 		{
 			e.printStackTrace();
 		}
-	}
-	
-	public Font getDefaultFont()
-	{
-		return this.defaultFont;
 	}
 }

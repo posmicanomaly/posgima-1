@@ -2,10 +2,8 @@ package com.jpospisil.posgima1;
 import java.util.ArrayList;
 
 import org.jsfml.graphics.Color;
-import org.jsfml.graphics.FloatRect;
 import org.jsfml.graphics.Text;
 import org.jsfml.graphics.View;
-import org.jsfml.window.VideoMode;
 
 
 public class SFMLUI {

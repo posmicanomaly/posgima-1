@@ -18,6 +18,17 @@ public class SFMLASCIIRender {
 		this.window = window;
 	}
 	
+	public void deathScreen(Player player)
+	{
+		window.getRenderWindow().setView(window.getWorldView());
+		
+		text = new Text(GameConstants.DEATH_MESSAGE + "\nres(P)awn", GameConstants.FONTS.getDefaultFont(), GameConstants.DEFAULT_FONT_SIZE * 4);
+		text.setPosition(window.getWorldView().getCenter());
+		text.setColor(Color.WHITE);
+		window.getRenderWindow().draw(text);
+		
+	}
+	
 	//Returns a SFML Color based on the tile's type
 	private Color determineColorFromType(String type)
 	{
@@ -56,15 +67,6 @@ public class SFMLASCIIRender {
 		}
 		return null;
 	}
-	
-	private void drawDugGlyph(Tile tile)
-	{
-		window.getRenderWindow().setView(window.getWorldView());
-		text.setString(GameConstants.DUG_GLYPH);
-		text.setColor(this.determineColorFromType("dug"));
-		text.setPosition(tile.getX(), tile.getY());
-		window.getRenderWindow().draw(text);
-	}
 	private void drawBackgroundGrassGlyph(Tile tile)
 	{
 		window.getRenderWindow().setView(window.getWorldView());
@@ -73,6 +75,15 @@ public class SFMLASCIIRender {
 		text.setPosition(tile.getX(), tile.getY());
 		window.getRenderWindow().draw(text);
 	}
+	private void drawDugGlyph(Tile tile)
+	{
+		window.getRenderWindow().setView(window.getWorldView());
+		text.setString(GameConstants.DUG_GLYPH);
+		text.setColor(this.determineColorFromType("dug"));
+		text.setPosition(tile.getX(), tile.getY());
+		window.getRenderWindow().draw(text);
+	}
+	
 	//Returns all tile glyphs, which are defined in GameConstants based on tile's type
 	private void getGlyphs(GameMap gameMap, Player player)
 	{
@@ -197,17 +208,6 @@ public class SFMLASCIIRender {
 				}
 			}
 		}
-	}
-	
-	public void deathScreen(Player player)
-	{
-		window.getRenderWindow().setView(window.getWorldView());
-		
-		text = new Text(GameConstants.DEATH_MESSAGE + "\nres(P)awn", GameConstants.FONTS.getDefaultFont(), GameConstants.DEFAULT_FONT_SIZE * 4);
-		text.setPosition(window.getWorldView().getCenter());
-		text.setColor(Color.WHITE);
-		window.getRenderWindow().draw(text);
-		
 	}
 	public void winScreen(Player player)
 	{

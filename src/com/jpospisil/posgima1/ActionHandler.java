@@ -41,88 +41,88 @@ public class ActionHandler {
 		return actions;
 	}
 
-	public void setActions(ArrayList<Boolean> actions) {
-		this.actions = actions;
-	}
-
-	public boolean isMine() {
-		return mine;
-	}
-
-	public void setMine(boolean mine) {
-		this.mine = mine;
+	public boolean isBuildHouse() {
+		return buildHouse;
 	}
 
 	public boolean isBuildRoad() {
 		return buildRoad;
 	}
 
-	public void setBuildRoad(boolean buildRoad) {
-		this.buildRoad = buildRoad;
-	}
-
-	public boolean isEat() {
-		return eat;
-	}
-
-	public void setEat(boolean eat) {
-		this.eat = eat;
+	public boolean isDecreaseMapSize() {
+		return decreaseMapSize;
 	}
 
 	public boolean isDig() {
 		return dig;
 	}
 
-	public void setDig(boolean dig) {
-		this.dig = dig;
-	}
-
-	public boolean isSwim() {
-		return swim;
-	}
-
-	public void setSwim(boolean swim) {
-		this.swim = swim;
-	}
-
-	public boolean isBuildHouse() {
-		return buildHouse;
-	}
-
-	public void setBuildHouse(boolean buildHouse) {
-		this.buildHouse = buildHouse;
-	}
-
-	public boolean isSleep() {
-		return sleep;
-	}
-
-	public void setSleep(boolean sleep) {
-		this.sleep = sleep;
+	public boolean isEat() {
+		return eat;
 	}
 
 	public boolean isIncreaseMapSize() {
 		return increaseMapSize;
 	}
 
-	public void setIncreaseMapSize(boolean increaseMapSize) {
-		this.increaseMapSize = increaseMapSize;
-	}
-
-	public boolean isDecreaseMapSize() {
-		return decreaseMapSize;
-	}
-
-	public void setDecreaseMapSize(boolean decreaseMapSize) {
-		this.decreaseMapSize = decreaseMapSize;
+	public boolean isMine() {
+		return mine;
 	}
 
 	public boolean isRegenerateMap() {
 		return regenerateMap;
 	}
 
+	public boolean isSleep() {
+		return sleep;
+	}
+
+	public boolean isSwim() {
+		return swim;
+	}
+
+	public void setActions(ArrayList<Boolean> actions) {
+		this.actions = actions;
+	}
+
+	public void setBuildHouse(boolean buildHouse) {
+		this.buildHouse = buildHouse;
+	}
+
+	public void setBuildRoad(boolean buildRoad) {
+		this.buildRoad = buildRoad;
+	}
+
+	public void setDecreaseMapSize(boolean decreaseMapSize) {
+		this.decreaseMapSize = decreaseMapSize;
+	}
+
+	public void setDig(boolean dig) {
+		this.dig = dig;
+	}
+
+	public void setEat(boolean eat) {
+		this.eat = eat;
+	}
+
+	public void setIncreaseMapSize(boolean increaseMapSize) {
+		this.increaseMapSize = increaseMapSize;
+	}
+
+	public void setMine(boolean mine) {
+		this.mine = mine;
+	}
+
 	public void setRegenerateMap(boolean regenerateMap) {
 		this.regenerateMap = regenerateMap;
+	}
+
+	public void setSleep(boolean sleep) {
+		this.sleep = sleep;
+	}
+
+	public void setSwim(boolean swim) {
+		this.swim = swim;
 	}
 
 }

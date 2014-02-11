@@ -125,6 +125,28 @@ public class MapGenerator {
 		
 	}
 	
+	private void addBoxRoom(char boundingGlyph,int x, int y, int height, int width)
+	{
+		for(int i = y; i < y + height; i++)
+		{
+			char mapLineChars[] = gameMapArray.get(i).toCharArray();
+		
+			for(int j = x; j < x + width; j++)
+			{				
+				if(i == y || i == height - 1)//first row
+				{				
+					mapLineChars[j] = boundingGlyph;
+				}
+				
+				if(j == x || j == width - 1)//sides
+				{
+					mapLineChars[j] = boundingGlyph;
+				}				
+			}
+			gameMapArray.set(i, new String(mapLineChars));
+		}
+	}
+	
 	private String generateBaseMap(char baseGlyph, int cols, int rows)
 	{
 		if(GameConstants.DEBUG) System.out.print("\ngenerateBaseMap");
@@ -148,28 +170,11 @@ public class MapGenerator {
 		return baseMap;
 	}
 	
-	private void addBoxRoom(char boundingGlyph,int x, int y, int height, int width)
+	public ArrayList<String> getGameMapArray()
 	{
-		for(int i = y; i < y + height; i++)
-		{
-			char mapLineChars[] = gameMapArray.get(i).toCharArray();
-		
-			for(int j = x; j < x + width; j++)
-			{				
-				if(i == y || i == height - 1)//first row
-				{				
-					mapLineChars[j] = boundingGlyph;
-				}
-				
-				if(j == x || j == width - 1)//sides
-				{
-					mapLineChars[j] = boundingGlyph;
-				}				
-			}
-			gameMapArray.set(i, new String(mapLineChars));
-		}
+		return this.gameMapArray;
 	}
-	
+
 	private void seedTerrain(char seedGlyph)
 	{
 		//if(GameConstants.DEBUG)	System.out.print(".");
@@ -274,10 +279,5 @@ public class MapGenerator {
 				}
 			}
 		}
-	}
-
-	public ArrayList<String> getGameMapArray()
-	{
-		return this.gameMapArray;
 	}
 }

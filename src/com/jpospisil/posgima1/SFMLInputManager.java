@@ -1,6 +1,5 @@
 package com.jpospisil.posgima1;
 import org.jsfml.graphics.RenderWindow;
-import org.jsfml.window.Keyboard.Key;
 import org.jsfml.window.event.Event;
 import org.jsfml.window.event.KeyEvent;
 
@@ -21,66 +20,26 @@ public class SFMLInputManager {
 		this.actionHandler = actionHandler;
 	}
 	
-	public void pollMiningKeys(Player player)
-	{
-
-
-		//Game.redrawAll();
-		boolean done = false;		
-		//while(!done)
-		//{
+	public void pollDeathKeyEvents(Player player2) {
 		for(Event event : this.window.pollEvents())
 		{
 			if(event.type == Event.Type.KEY_PRESSED)
 			{
-
-				Tile tile = null;
+				//player.setMovedLastTurn(false);
 				KeyEvent keyEvent = event.asKeyEvent();
+				
 				switch(keyEvent.key)
 				{
 				case ESCAPE:
-					this.actionHandler.setMine(false);
-					player.setMining(false);
-					return;						
-
-				case UP:
-					tile = player.getCurrentMap().getTileFromCoords(player.getCurrentTile().getX(), player.getCurrentTile().getY() - GameConstants.DEFAULT_FONT_SIZE);
-					
+					this.window.close();
 					break;
-
-				case DOWN:
-					tile = player.getCurrentMap().getTileFromCoords(player.getCurrentTile().getX(), player.getCurrentTile().getY() + GameConstants.DEFAULT_FONT_SIZE);
-					break;
-
-				case RIGHT:
-					tile = player.getCurrentMap().getTileFromCoords(player.getCurrentTile().getX() + GameConstants.DEFAULT_FONT_SIZE, player.getCurrentTile().getY());
-					break;
-
-				case LEFT:
-					tile = player.getCurrentMap().getTileFromCoords(player.getCurrentTile().getX() - GameConstants.DEFAULT_FONT_SIZE, player.getCurrentTile().getY());
+				case P:
+					this.actionHandler.setRegenerateMap(true);					
 					break;
 				}
-				
-				if(tile == null)
-				{
-					return;							
-				}
-				if(!player.getCurrentMap().checkTerrainCollision(tile) && tile.getType() == "mountain")
-				{					
-					player.setMiningSuccess(true);
-					player.setLookingAt(tile);
-					//return true;
-				}
-			}				
-			//if(done)
-			//{
-			//player.mine();
-			
-			//}				
-			//}			
+			}
 		}
 		
-
 	}
 
 	public void pollKeyEvents(Player player)
@@ -168,25 +127,65 @@ public class SFMLInputManager {
 			
 	}
 
-	public void pollDeathKeyEvents(Player player2) {
+	public void pollMiningKeys(Player player)
+	{
+
+
+		//Game.redrawAll();
+		boolean done = false;		
+		//while(!done)
+		//{
 		for(Event event : this.window.pollEvents())
 		{
 			if(event.type == Event.Type.KEY_PRESSED)
 			{
-				//player.setMovedLastTurn(false);
+
+				Tile tile = null;
 				KeyEvent keyEvent = event.asKeyEvent();
-				
 				switch(keyEvent.key)
 				{
 				case ESCAPE:
-					this.window.close();
+					this.actionHandler.setMine(false);
+					player.setMining(false);
+					return;						
+
+				case UP:
+					tile = player.getCurrentMap().getTileFromCoords(player.getCurrentTile().getX(), player.getCurrentTile().getY() - GameConstants.DEFAULT_FONT_SIZE);
+					
 					break;
-				case P:
-					this.actionHandler.setRegenerateMap(true);					
+
+				case DOWN:
+					tile = player.getCurrentMap().getTileFromCoords(player.getCurrentTile().getX(), player.getCurrentTile().getY() + GameConstants.DEFAULT_FONT_SIZE);
+					break;
+
+				case RIGHT:
+					tile = player.getCurrentMap().getTileFromCoords(player.getCurrentTile().getX() + GameConstants.DEFAULT_FONT_SIZE, player.getCurrentTile().getY());
+					break;
+
+				case LEFT:
+					tile = player.getCurrentMap().getTileFromCoords(player.getCurrentTile().getX() - GameConstants.DEFAULT_FONT_SIZE, player.getCurrentTile().getY());
 					break;
 				}
-			}
+				
+				if(tile == null)
+				{
+					return;							
+				}
+				if(!player.getCurrentMap().checkTerrainCollision(tile) && tile.getType() == "mountain")
+				{					
+					player.setMiningSuccess(true);
+					player.setLookingAt(tile);
+					//return true;
+				}
+			}				
+			//if(done)
+			//{
+			//player.mine();
+			
+			//}				
+			//}			
 		}
 		
+
 	}
 }

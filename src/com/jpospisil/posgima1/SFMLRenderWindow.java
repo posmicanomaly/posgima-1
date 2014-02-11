@@ -40,6 +40,16 @@ public class SFMLRenderWindow {
 	}
 	
 	
+	private void clearWindow()
+	{
+		window.clear();
+	}
+	
+	private void clearWindow(Color color)
+	{
+		window.clear(color);
+	}
+	
 	private void createWindow()
 	{
 		if(GameConstants.DEBUG_WINDOWED)
@@ -58,21 +68,6 @@ public class SFMLRenderWindow {
 		window.display();
 	}
 	
-	private void clearWindow()
-	{
-		window.clear();
-	}
-	
-	private void clearWindow(Color color)
-	{
-		window.clear(color);
-	}
-	
-	public boolean isOpen()
-	{
-		return this.window.isOpen();
-	}
-	
 	public RenderWindow getRenderWindow()
 	{
 		return this.window;
@@ -81,6 +76,11 @@ public class SFMLRenderWindow {
 	public View getWorldView()
 	{
 		return this.worldView;
+	}
+	
+	public boolean isOpen()
+	{
+		return this.window.isOpen();
 	}
 	
 	public void setZoom(View view, float zoomLevel)
