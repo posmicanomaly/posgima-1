@@ -28,7 +28,7 @@ public class Game implements Runnable {
 			GameConstants.RENDER_REQUIRED = true;
 
 		}
-		if (GameConstants.RENDER_REQUIRED)
+		//if (GameConstants.RENDER_REQUIRED)
 			this.redrawAll();
 		if (this.actionHandler.isMine())
 			input.pollMiningKeys(player);
