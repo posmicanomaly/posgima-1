@@ -72,6 +72,7 @@ public class Game implements Runnable
 			a.setBuildRoad(false);
 		}
 		
+		//TODO something about motivation stat, and being too lazy to build a house
 		if(a.isBuildHouse())
 		{
 			if(!player.buildHouse())
@@ -213,6 +214,7 @@ public class Game implements Runnable
 			window.getRenderWindow().display();
 			GameConstants.RENDER_REQUIRED = false;
 		}
+		this.processActions();
 		input.pollDeathKeyEvents(player);
 	}
 	public void newGame()
@@ -290,6 +292,7 @@ public class Game implements Runnable
 			window.getRenderWindow().display();
 			GameConstants.RENDER_REQUIRED = false;
 		}
+		this.processActions();
 		input.pollDeathKeyEvents(player);
 	}
 	@Override
