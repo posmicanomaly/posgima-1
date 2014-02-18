@@ -3,6 +3,7 @@ package com.jpospisil.posgima1;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -69,20 +70,19 @@ public class MapGenerator {
 		return array;
 	}
 
-	private HashMap<String, Integer> makeTerrainHashMap() {
-		HashMap<String, Integer> terrain = new HashMap<String, Integer>();
-		
+	private LinkedHashMap<String, Integer> makeTerrainHashMap() {
+		LinkedHashMap<String, Integer> terrain = new LinkedHashMap<String, Integer>();		
 		
 		terrain.put("M", this.mountainSeeds);
 		terrain.put("~", this.hillSeeds);
 		terrain.put("&", this.forestSeeds);
 		terrain.put("=", this.waterSeeds);
-		terrain.put("S", this.desertSeeds);
+		terrain.put("S", this.desertSeeds);		
 
 		return terrain;
 	}
 
-	private void seedAllTerrain(HashMap<String, Integer> terrainMap) {
+	private void seedAllTerrain(LinkedHashMap<String, Integer> terrainMap) {
 		Iterator<String> iterator = terrainMap.keySet().iterator();
 		
 		while (iterator.hasNext()) {
