@@ -35,26 +35,6 @@ public class MapGenerator {
 			System.out.print("\nDone");
 	}
 
-	private void addBoxRoom(char boundingGlyph, int x, int y, int height,
-			int width) {
-		for (int i = y; i < y + height; i++) {
-			char mapLineChars[] = gameMapArray.get(i).toCharArray();
-
-			for (int j = x; j < x + width; j++) {
-				if (i == y || i == height - 1)// first row
-				{
-					mapLineChars[j] = boundingGlyph;
-				}
-
-				if (j == x || j == width - 1)// sides
-				{
-					mapLineChars[j] = boundingGlyph;
-				}
-			}
-			gameMapArray.set(i, new String(mapLineChars));
-		}
-	}
-
 	private String generateBaseMap(char baseGlyph, int cols, int rows) {
 		if (GameConstants.DEBUG)
 			System.out.print("\ngenerateBaseMap");
@@ -77,6 +57,7 @@ public class MapGenerator {
 
 	private ArrayList<String> makeGameMapArray(String gameMapString) {
 		ArrayList<String> array = new ArrayList<String>();
+		
 		if (GameConstants.DEBUG)
 			System.out.print("\nBuilding Map: Constructing gameMapArray");
 		Scanner scanner = new Scanner(gameMapString);
@@ -84,15 +65,18 @@ public class MapGenerator {
 			array.add(scanner.nextLine());
 		}
 		scanner.close();
+		
 		return array;
 	}
 
 	private HashMap<String, Integer> makeTerrainHashMap() {
 		HashMap<String, Integer> terrain = new HashMap<String, Integer>();
-		terrain.put("=", this.waterSeeds);
+		
+		
 		terrain.put("M", this.mountainSeeds);
 		terrain.put("~", this.hillSeeds);
 		terrain.put("&", this.forestSeeds);
+		terrain.put("=", this.waterSeeds);
 		terrain.put("S", this.desertSeeds);
 
 		return terrain;
@@ -100,26 +84,30 @@ public class MapGenerator {
 
 	private void seedAllTerrain(HashMap<String, Integer> terrainMap) {
 		Iterator<String> iterator = terrainMap.keySet().iterator();
+		
 		while (iterator.hasNext()) {
 			String key = iterator.next();
 			if (GameConstants.DEBUG)
 				System.out.print("\nSeeding \"" + key + "\" "
 						+ terrainMap.get(key));
+			
 			for (int i = 0; i < terrainMap.get(key); i++) {
 				this.seedTerrain(key);
 			}
 		}
 	}
 
-	private void seedTerrain(String key) {
-		// if(GameConstants.DEBUG) System.out.print(".");
-		char charKey = key.charAt(0);
+	private void seedTerrain(String key) {		
+		char charKey = key.charAt(0);		
 		Random rand = new Random();
+		
 		int seedStrength = rand.nextInt(GameConstants.MAP_MAX_SEED_STRENGTH);
 		int row = -1;
 		int col = -1;
+		
 		boolean rowInRange = false;
 		boolean colInRange = false;
+		
 		while (!rowInRange && !colInRange) {
 			if (row < 0 || row > GameConstants.MAP_GENERATOR_ROWS) {
 				row = rand.nextInt(GameConstants.MAP_GENERATOR_ROWS);
@@ -137,6 +125,7 @@ public class MapGenerator {
 			}
 
 		}
+		
 		int seedSuccess = 0;
 		while (seedSuccess < seedStrength) {
 
@@ -272,5 +261,25 @@ public class MapGenerator {
 		mountainSeeds = rand.nextInt(MAX);
 		forestSeeds = rand.nextInt(MAX);
 		desertSeeds = rand.nextInt(MAX);
+	}
+
+	private void zz_addBoxRoom(char boundingGlyph, int x, int y, int height,
+			int width) {
+		for (int i = y; i < y + height; i++) {
+			char mapLineChars[] = gameMapArray.get(i).toCharArray();
+
+			for (int j = x; j < x + width; j++) {
+				if (i == y || i == height - 1)// first row
+				{
+					mapLineChars[j] = boundingGlyph;
+				}
+
+				if (j == x || j == width - 1)// sides
+				{
+					mapLineChars[j] = boundingGlyph;
+				}
+			}
+			gameMapArray.set(i, new String(mapLineChars));
+		}
 	}
 }
