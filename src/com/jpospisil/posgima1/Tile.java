@@ -45,7 +45,7 @@ public class Tile {
 	}
 
 	public void setDug(boolean b) {
-		dug = true;
+		dug = b;
 
 	}
 

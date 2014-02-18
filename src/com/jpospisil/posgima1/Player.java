@@ -48,6 +48,18 @@ public class Player {
 			return true;
 		}
 	}
+	
+	public boolean buildFarm() {
+		if (this.getHungerLevel() > 0) {
+			return false;
+		}
+		else
+		{
+			this.getCurrentTile().setType("farm");
+			this.setHungerLevel(10);
+			return true;
+		}
+	}
 
 	public boolean buildRoad() {
 		if (this.getHungerLevel() > 5) {

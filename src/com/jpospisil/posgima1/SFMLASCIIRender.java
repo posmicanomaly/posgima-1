@@ -30,6 +30,8 @@ public class SFMLASCIIRender {
 	// Returns a SFML Color based on the tile's type
 	private Color determineColorFromType(String type) {
 		switch (type) {
+		case "farm":
+			return GameConstants.FARM_COLOR;
 		case "house":
 			return GameConstants.HOUSE_COLOR;
 		case "dug":
@@ -95,6 +97,11 @@ public class SFMLASCIIRender {
 
 			Tile tile = visibleTiles.get(i);
 			switch (tile.getType()) {
+			case "farm":
+				this.drawBackgroundGrassGlyph(tile);
+				text.setString(GameConstants.FARM_GLYPH);
+				break;
+				
 			case "house":
 				this.drawBackgroundGrassGlyph(tile);
 				text.setString(GameConstants.HOUSE_GLYPH);
@@ -145,9 +152,9 @@ public class SFMLASCIIRender {
 			text.setColor(this.determineColorFromType(tile.getType()));
 			// tileGlyphs.add(text);
 			window.getRenderWindow().draw(text);
-			if (tile.getDug() && tile.getType() != "road"
-					&& tile.getType() != "house")
-				this.drawDugGlyph(tile);
+			if (tile.getDug())
+				if(tile.getType() != "road"	&& tile.getType() != "house")
+					this.drawDugGlyph(tile);
 
 			renderedCount++;
 

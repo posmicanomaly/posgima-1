@@ -12,6 +12,16 @@ public class Game{
 	public SFMLInputManager input;
 	public SFMLUI ui;
 	public Player player;
+	
+	private int hoursElapsed;
+
+	public int getHoursElapsed() {
+		return hoursElapsed;
+	}
+
+	public void setHoursElapsed(int hoursElapsed) {
+		this.hoursElapsed = hoursElapsed;
+	}
 
 	private boolean newGame;
 
@@ -19,12 +29,32 @@ public class Game{
 		this.init();
 		this.newGame();
 	}
+	
+	private void growCrops()
+	{
+		if(this.getHoursElapsed()%24 == 0)
+		{
+			for(int i = 0; i < this.mapManager.getGameMap().getTileArray().size(); i++)
+			{
+				Tile tile = this.mapManager.getGameMap().getTileArray().get(i);
+				if(tile.getType() == "farm")
+				{
+					tile.addItem(new Item("food"));
+					tile.setDug(false);
+				}
+			}
+		}
+	}
 
 	private void continueGame() {
 
 		if (player.movedLastTurn) {
+			this.setHoursElapsed(this.getHoursElapsed()+1);
 			player.movedLastTurn = false;
 			player.processPlayerRules();
+			
+			//is this order correct
+			this.growCrops();
 			GameConstants.RENDER_REQUIRED = true;
 
 		}
@@ -120,7 +150,7 @@ public class Game{
 		Renderer = new SFMLASCIIRender(window);
 		mapManager = new MapManager();
 		input = new SFMLInputManager(window, this.actionHandler);
-		ui = new SFMLUI(window);
+		ui = new SFMLUI(window, this);
 		ui.messages.clear();
 		ui.messages.add("new game\n");
 		ui.messages
@@ -144,6 +174,7 @@ public class Game{
 
 		this.redrawAll();
 		// new Thread(this).start();
+		this.hoursElapsed = 0;
 		setNewGame(false);
 	}
 
@@ -197,6 +228,17 @@ public class Game{
 				player.setMovedLastTurn(true);
 			}
 			a.setBuildRoad(false);
+		}
+		if(a.isBuildFarm()) {
+			if(!player.buildFarm()) {
+				this.ui.messages.add("Too hungry to build a farm, lol\n");
+				this.redrawAll();
+			}
+			else {
+				this.ui.messages.add("You built a farm\n");
+				player.setMovedLastTurn(true);
+			}
+			a.setBuildFarm(false);
 		}
 
 		// TODO something about motivation stat, and being too lazy to build a

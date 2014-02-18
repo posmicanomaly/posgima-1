@@ -85,6 +85,11 @@ public class SFMLInputManager {
 							&& player.getCurrentTile().getType() != "house")
 						this.actionHandler.setBuildHouse(true);
 					break;
+					
+				case L:
+					if(player.getCurrentTile().getType() != "water")
+						this.actionHandler.setBuildFarm(true);
+					break;
 
 				case R:
 					if (player.getCurrentTile().getType() != "water"

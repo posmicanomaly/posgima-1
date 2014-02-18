@@ -5,28 +5,30 @@ import java.util.ArrayList;
 public class ActionHandler {
 
 	private ArrayList<Boolean> actions;
-	private boolean mine, buildRoad, eat, dig, swim, buildHouse, sleep,
+	private boolean mine, buildRoad, eat, dig, swim, buildHouse, buildFarm, sleep,
 			increaseMapSize, decreaseMapSize, regenerateMap;
 
+	public boolean isBuildFarm() {
+		return buildFarm;
+	}
+
+	public void setBuildFarm(boolean buildFarm) {
+		this.buildFarm = buildFarm;
+	}
+
 	public ActionHandler() {
-		this.actions = new ArrayList<Boolean>();
+		
 		this.mine = false;
 		this.buildRoad = false;
 		this.eat = false;
 		this.dig = false;
 		this.swim = false;
 		this.buildHouse = false;
+		this.buildFarm = false;
 		this.sleep = false;
 		this.increaseMapSize = false;
 		this.decreaseMapSize = false;
 		this.regenerateMap = false;
-
-		this.actions.add(mine);
-		this.actions.add(buildRoad);
-		this.actions.add(eat);
-		this.actions.add(swim);
-		this.actions.add(buildHouse);
-		this.actions.add(sleep);
 	}
 
 	public ArrayList<Boolean> getActions() {

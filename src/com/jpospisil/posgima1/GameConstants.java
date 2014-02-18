@@ -69,6 +69,7 @@ public final class GameConstants {
 	public static String DESERT_GLYPH = "\u2591";
 	public static String DUG_GLYPH = "\u25A0";
 	public static String HOUSE_GLYPH = "\u06E9";
+	public static String FARM_GLYPH = "\u25A1";
 	public static String ERROR_GLYPH = "?";
 
 	public static Color GRASS_COLOR = new Color(0, 255, 0, 100);
@@ -85,6 +86,7 @@ public final class GameConstants {
 	public static Color DUG_COLOR = new Color(139, 119, 101, 125);
 	public static Color HOUSE_COLOR = Color.WHITE;
 	public static Color PLAYER_COLOR = Color.MAGENTA;
+	public static Color FARM_COLOR = Color.GREEN;
 
 	public static void printDebugMessage(String error) {
 		if (DEBUG) {

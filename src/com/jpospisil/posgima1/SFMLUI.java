@@ -13,8 +13,10 @@ public class SFMLUI {
 	private SFMLRenderWindow window;
 	private View sideView;
 	private View bottomView;
+	private Game game;
 
-	public SFMLUI(SFMLRenderWindow window) {
+	public SFMLUI(SFMLRenderWindow window, Game game) {
+		this.game = game;
 		this.window = window;
 		sideView = new View(window.getRenderWindow().getDefaultView()
 				.getCenter(), window.getRenderWindow().getDefaultView()
@@ -56,10 +58,14 @@ public class SFMLUI {
 
 		window.getRenderWindow().setView(this.sideView);
 		Text text = new Text();
-		text.setString(player.getName() + "\n" + "\n" + "Health: "
-				+ player.getHealth() + "\n" + "Hunger: "
-				+ player.getHungerLevel() + "\n" + "Food: " + food + "\n"
-				+ "Digs: " + digs + "\n" + "Moves: " + moves + "\n" + "\n"
+		text.setString(player.getName() + "\n" 
+										+ "\n" 
+										+ "Health: " + player.getHealth() + "\n" 
+										+ "Hunger: " + player.getHungerLevel() + "\n" 
+										+ "Food: " + food + "\n"
+										+ "Digs: " + digs + "\n"
+										+ "Moves: " + moves + "\n" 
+										+ "Day: " + game.getHoursElapsed()/24 + " Hour: " + game.getHoursElapsed()%24 + "\n"
 				+ player.getCurrentTile().getType() + "\n" + "");
 		text.setFont(GameConstants.FONTS.getDefaultFont());
 		text.setPosition(0, 0);
