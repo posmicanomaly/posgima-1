@@ -4,7 +4,7 @@ import java.util.Random;
 
 import org.jsfml.graphics.Color;
 
-public class Game implements Runnable {
+public class Game{
 	private ActionHandler actionHandler;
 	public SFMLRenderWindow window;
 	public SFMLASCIIRender Renderer;
@@ -61,7 +61,7 @@ public class Game implements Runnable {
 		}
 	}
 
-	private String getRandomValidTileType() {
+	private String getRandomValidTileType(String foundMessage) {
 		Random random = new Random();
 		String type = "";
 		boolean typePresentPassed = false;
@@ -83,9 +83,9 @@ public class Game implements Runnable {
 				type = "hill";
 				break;
 			}
-			System.out.println(type + " searching...");
+			System.out.println("\n" + type + " searching...");
 			if (mapManager.getGameMap().hasTileType(type)) {
-				System.out.println(type + " has been found");
+				System.out.println(type + " " + foundMessage);
 				return type;
 
 			}
@@ -262,16 +262,7 @@ public class Game implements Runnable {
 		Renderer.renderPlayer(player);
 		this.drawUI();
 		window.getRenderWindow().display();
-	}
-
-	@Override
-	public void run() {
-		if (GameConstants.RENDER_REQUIRED) {
-			System.out.println("running");
-			this.redrawAll();
-			GameConstants.RENDER_REQUIRED = false;
-		}
-	}
+	}	
 
 	public void setNewGame(boolean b) {
 		newGame = b;
@@ -289,11 +280,11 @@ public class Game implements Runnable {
 		player = new Player();
 		player.setCurrentMap(mapManager.getGameMap());
 		player.setCurrentTile(player.getCurrentMap().getRandomTileByType(
-				getRandomValidTileType()));
+				getRandomValidTileType("player tile")));
 	}
 
 	private void setupWinTile() {
-		mapManager.getGameMap().getRandomTileByType(getRandomValidTileType())
+		mapManager.getGameMap().getRandomTileByType(getRandomValidTileType("win tile"))
 				.addItem(new Item("win"));
 	}
 
