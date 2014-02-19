@@ -5,9 +5,9 @@ import java.util.Random;
 
 public class Player {
 
-	private Tile currentTile;
+	protected Tile currentTile;
 	private Tile lookingAt;
-	private GameMap currentMap;
+	protected GameMap currentMap;
 	public boolean movedLastTurn;
 
 	private String name;
@@ -17,6 +17,7 @@ public class Player {
 	private int moves;
 	private int digCount;
 	private int foodCount;
+	private int seedCount;
 	private int hungerLevel;
 	private int health;
 
@@ -29,6 +30,7 @@ public class Player {
 		this.moves = 0;
 		this.digCount = 0;
 		this.foodCount = 0;
+		this.seedCount = 1;
 		this.hungerLevel = 0;
 		this.health = 100;
 		this.isMining = false;
@@ -36,6 +38,18 @@ public class Player {
 
 		this.alive = true;
 		// TODO Auto-generated constructor stub
+	}
+
+	public int getSeedCount() {
+		return seedCount;
+	}
+
+	public void setSeedCount(int seedCount) {
+		this.seedCount = seedCount;
+	}
+
+	public void setAlive(boolean alive) {
+		this.alive = alive;
 	}
 
 	public boolean buildHouse() {
@@ -49,16 +63,21 @@ public class Player {
 		}
 	}
 	
-	public boolean buildFarm() {
-		if (this.getHungerLevel() > 0) {
-			return false;
-		}
-		else
+	public String buildFarm() {
+		if(this.getSeedCount() > 0)
 		{
-			this.getCurrentTile().setType("farm");
-			this.setHungerLevel(10);
-			return true;
+			if (this.getHungerLevel() > 0) {
+				return "hungerError";
+			}
+			else
+			{
+				this.getCurrentTile().setType("farm");
+				this.setHungerLevel(10);
+				this.setSeedCount(this.getSeedCount() - 1);
+				return "built";
+			}
 		}
+		return "noSeeds";
 	}
 
 	public boolean buildRoad() {
@@ -81,25 +100,24 @@ public class Player {
 
 	public void dig() {
 
-		for (Iterator<Item> item = this.currentTile.getItems().iterator(); item
-				.hasNext();) {
-			Item i = item.next();
-			if (i.getName() == "win") {
-				// SFMLUI.messages.add("YOU WIN\n");
-				GameConstants.won = true;
-				item.remove();
-				break;
-			} else if (i.getName() == "food") {
-				// SFMLUI.messages.add("Found some food!\n");
-				this.setFoodCount(this.getFoodCount() + 1);
-				item.remove();
-				break;
+			for(Item item : this.currentTile.getItems())
+			{
+				if(item.getName() == "food")
+					this.setFoodCount(this.getFoodCount() + 1);
+				else if(item.getName() == "seed")
+				{
+					this.setSeedCount(this.getSeedCount() + 1);
+				}
+				else if(item.getName() == "win")
+				{
+					GameConstants.won = true;
+				}
 			}
-		}
-		this.setMoves(this.getMoves() + 1);
-		this.setDigCount(this.getDigCount() + 1);
-		this.currentTile.setDug(true);
-
+			this.currentTile.clearItems();
+			this.setMoves(this.getMoves() + 1);
+			this.setDigCount(this.getDigCount() + 1);
+			this.currentTile.setDug(true);
+		
 	}
 
 	public void eat() {
@@ -289,13 +307,24 @@ public class Player {
 		this.name = name;
 	}
 
-	public boolean sleep() {
+	public boolean rest() {
 		if (this.getHungerLevel() < 10) {
 			this.setHealth(this.getHealth() + 1);
 			this.setMovedLastTurn(true);
 			return true;
 		}
 		return false;
+		// else
+		// SFMLUI.messages.add("Too hungry to sleep\n");
+
+	}
+	public String sleep() {
+		if (this.getHungerLevel() < 10) {			
+				this.setHealth(this.getHealth() + 1);
+				this.setMovedLastTurn(true);			
+			return "sleeping";
+		}
+		return "tooHungry";
 		// else
 		// SFMLUI.messages.add("Too hungry to sleep\n");
 

@@ -63,6 +63,7 @@ public class SFMLUI {
 										+ "Health: " + player.getHealth() + "\n" 
 										+ "Hunger: " + player.getHungerLevel() + "\n" 
 										+ "Food: " + food + "\n"
+										+ "Seeds: " + player.getSeedCount() + "\n"
 										+ "Digs: " + digs + "\n"
 										+ "Moves: " + moves + "\n" 
 										+ "Day: " + game.getHoursElapsed()/24 + " Hour: " + game.getHoursElapsed()%24 + "\n"

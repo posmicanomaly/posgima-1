@@ -9,6 +9,39 @@ public class Tile {
 	private int x, y;
 	private boolean visible;
 	private boolean dug;
+	private int dugDuration;
+
+	public boolean isVisible() {
+		return visible;
+	}
+
+	public void setVisible(boolean visible) {
+		this.visible = visible;
+	}
+
+	public int getDugDuration() {
+		return dugDuration;
+	}
+
+	public void setDugDuration(int dugDuration) {
+		this.dugDuration = dugDuration;
+	}
+
+	public void setItems(ArrayList<Item> items) {
+		this.items = items;
+	}
+
+	public void setCanPass(boolean canPass) {
+		this.canPass = canPass;
+	}
+
+	public void setX(int x) {
+		this.x = x;
+	}
+
+	public void setY(int y) {
+		this.y = y;
+	}
 
 	public Tile(int x, int y) {
 		items = new ArrayList<Item>();
@@ -46,7 +79,14 @@ public class Tile {
 
 	public void setDug(boolean b) {
 		dug = b;
-
+		if(b == true)
+		{
+			this.dugDuration = 0;
+		}
+		if(b == false)
+		{
+			this.dugDuration = 0;
+		}
 	}
 
 	public void setPassableFlag(boolean b) {
@@ -60,6 +100,10 @@ public class Tile {
 	public void setVisibility(boolean b) {
 		this.visible = b;
 
+	}
+	public void clearItems()
+	{
+		this.items = new ArrayList<Item>();
 	}
 
 }

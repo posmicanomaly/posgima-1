@@ -86,12 +86,12 @@ public class SFMLInputManager {
 						this.actionHandler.setBuildHouse(true);
 					break;
 					
-				case L:
+				case F:
 					if(player.getCurrentTile().getType() != "water")
 						this.actionHandler.setBuildFarm(true);
 					break;
 
-				case R:
+				case P:
 					if (player.getCurrentTile().getType() != "water"
 							&& player.getCurrentTile().getType() != "road"
 							&& player.getCurrentTile().getType() != "house")
@@ -103,7 +103,7 @@ public class SFMLInputManager {
 						this.actionHandler.setDig(true);
 					break;
 
-				case P:
+				case Z:
 					this.actionHandler.setRegenerateMap(true);
 					break;
 

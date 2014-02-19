@@ -1,17 +1,20 @@
 package com.jpospisil.posgima1;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 import org.jsfml.graphics.Color;
 
 public class Game{
 	private ActionHandler actionHandler;
+	private ArrayList<Npc> npcArray;
 	public SFMLRenderWindow window;
 	public SFMLASCIIRender Renderer;
 	public MapManager mapManager;
 	public SFMLInputManager input;
 	public SFMLUI ui;
 	public Player player;
+	public Npc npc;
 	
 	private int hoursElapsed;
 
@@ -39,9 +42,52 @@ public class Game{
 				Tile tile = this.mapManager.getGameMap().getTileArray().get(i);
 				if(tile.getType() == "farm")
 				{
-					tile.addItem(new Item("food"));
-					tile.setDug(false);
+					if(tile.getItems().size() < 5)
+					{
+						tile.addItem(new Item("food"));
+						tile.setDug(false);
+					}
+					else
+					{
+						tile.addItem(new Item("seed"));
+						tile.setDug(false);
+					}
 				}
+			}
+		}
+	}
+	private void spawnNpc()
+	{
+		this.npcArray = new ArrayList<Npc>();
+		for(int i = 0; i < new Random().nextInt(GameConstants.MAX_DEER_SEED); i++)
+		{
+			Npc npc = new Npc();
+			npc.setCurrentMap(this.mapManager.getGameMap());
+			npc.setCurrentTile(this.mapManager.getGameMap().getRandomFoodWorthyTile());
+			this.npcArray.add(npc);
+		}
+		
+	}
+	private void regenerateDugTerrain()
+	{
+		for(Tile tile : this.mapManager.getGameMap().getTileArray())
+		{
+			if(tile.getDug())
+			{
+			if(tile.getType()!= "farm")
+			{
+				//24hrs * whatever for days
+				if(tile.getDugDuration() > 24 * 1)
+				{
+					if(new Random().nextInt(10) < 1) {
+					tile.setDug(false);
+					}
+				}
+				else
+				{
+					tile.setDugDuration(tile.getDugDuration() + 1);
+				}
+			}
 			}
 		}
 	}
@@ -55,6 +101,21 @@ public class Game{
 			
 			//is this order correct
 			this.growCrops();
+			this.regenerateDugTerrain();
+			for(Npc npc : this.npcArray)
+			{
+				
+			
+			int rand = new Random().nextInt(10);
+			switch(rand)
+			{
+			case 0: npc.move("north"); break;
+			case 1: npc.move("south"); break;
+			case 2: npc.move("west"); break;
+			case 3: npc.move("east"); break;
+			default: break;
+			}
+			}
 			GameConstants.RENDER_REQUIRED = true;
 
 		}
@@ -169,6 +230,7 @@ public class Game{
 		setupPlayer();
 		setupWinTile();
 		setupFood();
+		spawnNpc();
 
 		GameConstants.RENDER_REQUIRED = true;
 
@@ -230,11 +292,16 @@ public class Game{
 			a.setBuildRoad(false);
 		}
 		if(a.isBuildFarm()) {
-			if(!player.buildFarm()) {
+			String message = player.buildFarm();
+			if(message == "hungerError") {
 				this.ui.messages.add("Too hungry to build a farm, lol\n");
 				this.redrawAll();
 			}
-			else {
+			else if(message == "noSeeds"){
+				this.ui.messages.add("You need seeds to plant\n");
+				this.redrawAll();
+			}
+			else if(message == "built"){
 				this.ui.messages.add("You built a farm\n");
 				player.setMovedLastTurn(true);
 			}
@@ -254,11 +321,22 @@ public class Game{
 			a.setBuildHouse(false);
 		}
 		if (a.isSleep()) {
-			if (!player.sleep()) {
-				this.ui.messages.add("Too Hungry To Sleep\n");
-				this.redrawAll();
+			String message = player.sleep();
+			if(message == "sleeping")
+			{
+				this.ui.messages.add("Zzz\n");
+				try {
+					Thread.sleep(100);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
-			a.setSleep(false);
+			else if(message == "tooHungry")
+			{
+				this.ui.messages.add("Too hungry to sleep\n");
+				a.setSleep(false);
+			}
 		}
 
 		if (a.isIncreaseMapSize()) {
@@ -302,6 +380,7 @@ public class Game{
 		// if(GameConstants.DEBUG)
 		// Renderer.renderWin(mapManager.getGameMap());
 		Renderer.renderPlayer(player);
+		Renderer.renderAllNpc(this.npcArray);
 		this.drawUI();
 		window.getRenderWindow().display();
 	}	
