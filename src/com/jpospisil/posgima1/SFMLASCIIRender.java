@@ -177,14 +177,13 @@ public class SFMLASCIIRender {
 
 	private boolean drawBackgroundGlyph(String type, Tile tile) {
 		window.getRenderWindow().setView(window.getWorldView());
-		for (ASCIIRenderGlyph g : this.renderGlyphs) {
-			if (type == g.getType()) {
-				text.setString(g.getGlyph());
-				text.setColor(g.getColor());
-				text.setPosition(tile.getX(), tile.getY());
-				window.getRenderWindow().draw(text);
-				return true;
-			}
+		ASCIIRenderGlyph g = this.getRenderGlyphFromType(type);
+		if (g != null) {
+			text.setString(g.getGlyph());
+			text.setColor(g.getColor());
+			text.setPosition(tile.getX(), tile.getY());
+			window.getRenderWindow().draw(text);
+			return true;
 		}
 		return false;
 	}
@@ -244,42 +243,51 @@ public class SFMLASCIIRender {
 			renderNpc(npc);
 		}
 	}
-	public void renderNpc(Npc npc)
+	private ASCIIRenderGlyph getRenderGlyphFromType(String type)
 	{
 		for(ASCIIRenderGlyph g : this.renderGlyphs)
 		{
-			if(g.getType() == "npc")
-			{
-				text = new Text(g.getGlyph(), this.defaultFont, this.defaultFontSize);
-				text.setColor(g.getColor());
-				Tile tile = npc.getCurrentTile();
-				text.setPosition(tile.getX(), tile.getY());
-				window.getRenderWindow().draw(text);
-			}
+			if(g.getType() == type)
+				return g;
 		}
+		return null;
+	}
+	public void renderNpc(Npc npc)
+	{
+		ASCIIRenderGlyph g = this.getRenderGlyphFromType("npc");
+
+		if(g != null)
+		{
+			text = new Text(g.getGlyph(), this.defaultFont, this.defaultFontSize);
+			text.setColor(g.getColor());
+			Tile tile = npc.getCurrentTile();
+			text.setPosition(tile.getX(), tile.getY());
+			window.getRenderWindow().draw(text);
+		}
+
 	}
 	public void renderPlayer(Player player) {
-		for (ASCIIRenderGlyph g : this.renderGlyphs) {
-			if (g.getType() == "player") {
-				text = new Text(g.getGlyph(), this.defaultFont,
-						this.defaultFontSize);
-				text.setColor(g.getColor());
-				text.setStyle(Text.BOLD);
-				Tile tile = player.getCurrentTile();
-				text.setPosition(tile.getX(), tile.getY());
+		ASCIIRenderGlyph g = this.getRenderGlyphFromType("player"); 
+		if (g != null) {
+			text = new Text(g.getGlyph(), this.defaultFont,
+					this.defaultFontSize);
+			text.setColor(g.getColor());
+			text.setStyle(Text.BOLD);
+			Tile tile = player.getCurrentTile();
+			text.setPosition(tile.getX(), tile.getY());
 
-				// hack for 16:9 horizontal tiles showing halves
-				float windowCenterHack = (float) (tile.getX() - (GameConstants.WIDTH * .01 + 1));
-				if (GameConstants.HEIGHT % 9 == 0) {
-					window.getWorldView().setCenter(windowCenterHack,
-							tile.getY());
-				} else
-					// 16:10 master race
-					window.getWorldView().setCenter(tile.getX(), tile.getY());
-				window.getRenderWindow().setView(window.getWorldView());
-				window.getRenderWindow().draw(text);
-			}
+			// hack for 16:9 horizontal tiles showing halves
+			float windowCenterHack = (float) (tile.getX() - (GameConstants.WIDTH * .01 + 1));
+			if (GameConstants.HEIGHT % 9 == 0) {
+				window.getWorldView().setCenter(windowCenterHack,
+						tile.getY());
+			} else
+				// 16:10 master race
+				window.getWorldView().setCenter(tile.getX(), tile.getY());
+			window.getRenderWindow().setView(window.getWorldView());
+			window.getRenderWindow().draw(text);
 		}
+
 	}
 
 	public void renderWin(GameMap gameMap) {

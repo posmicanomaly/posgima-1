@@ -104,23 +104,23 @@ public class Game{
 			this.regenerateDugTerrain();
 			for(Npc npc : this.npcArray)
 			{
-				
-			
-			int rand = new Random().nextInt(10);
-			switch(rand)
-			{
-			case 0: npc.move("north"); break;
-			case 1: npc.move("south"); break;
-			case 2: npc.move("west"); break;
-			case 3: npc.move("east"); break;
-			default: break;
-			}
+
+
+				int rand = new Random().nextInt(10);
+				switch(rand)
+				{
+				case 0: npc.move("north"); break;
+				case 1: npc.move("south"); break;
+				case 2: npc.move("west"); break;
+				case 3: npc.move("east"); break;
+				default: break;
+				}
 			}
 			GameConstants.RENDER_REQUIRED = true;
 
 		}
 		//if (GameConstants.RENDER_REQUIRED)
-			this.redrawAll();
+		this.redrawAll();
 		if (this.actionHandler.isMine())
 			input.pollMiningKeys(player);
 		else
