@@ -4,30 +4,36 @@ import org.jsfml.graphics.RenderWindow;
 import org.jsfml.window.event.Event;
 import org.jsfml.window.event.KeyEvent;
 
-public class SFMLInputManager {
+public class SFMLInputManager
+{
 
-	private ActionHandler actionHandler;
+	private ActionHandler		actionHandler;
 	// private GameMap gameMap;
-	private SFMLASCIIRender render;
-	private SFMLRenderWindow SFMLWindow;
-	private RenderWindow window;
+	private SFMLASCIIRender		render;
+	private SFMLRenderWindow	SFMLWindow;
+	private RenderWindow		window;
 
 	// private Player player;
 
 	public SFMLInputManager(SFMLRenderWindow sfmlRenderWindow,
-			ActionHandler actionHandler) {
+			ActionHandler actionHandler)
+	{
 		SFMLWindow = sfmlRenderWindow;
 		window = sfmlRenderWindow.getRenderWindow();
 		this.actionHandler = actionHandler;
 	}
 
-	public void pollDeathKeyEvents(Player player2) {
-		for (Event event : this.window.pollEvents()) {
-			if (event.type == Event.Type.KEY_PRESSED) {
+	public void pollDeathKeyEvents(Player player2)
+	{
+		for (Event event : this.window.pollEvents())
+		{
+			if (event.type == Event.Type.KEY_PRESSED)
+			{
 				// player.setMovedLastTurn(false);
 				KeyEvent keyEvent = event.asKeyEvent();
 
-				switch (keyEvent.key) {
+				switch (keyEvent.key)
+				{
 				case ESCAPE:
 					this.window.close();
 					break;
@@ -40,13 +46,17 @@ public class SFMLInputManager {
 
 	}
 
-	public void pollKeyEvents(Player player) {
-		for (Event event : this.window.pollEvents()) {
-			if (event.type == Event.Type.KEY_PRESSED) {
+	public void pollKeyEvents(Player player)
+	{
+		for (Event event : this.window.pollEvents())
+		{
+			if (event.type == Event.Type.KEY_PRESSED)
+			{
 				player.setMovedLastTurn(false);
 				KeyEvent keyEvent = event.asKeyEvent();
 
-				switch (keyEvent.key) {
+				switch (keyEvent.key)
+				{
 				case ESCAPE:
 					this.window.close();
 					break;
@@ -85,9 +95,9 @@ public class SFMLInputManager {
 							&& player.getCurrentTile().getType() != "house")
 						this.actionHandler.setBuildHouse(true);
 					break;
-					
+
 				case F:
-					if(player.getCurrentTile().getType() != "water")
+					if (player.getCurrentTile().getType() != "water")
 						this.actionHandler.setBuildFarm(true);
 					break;
 
@@ -128,18 +138,22 @@ public class SFMLInputManager {
 
 	}
 
-	public void pollMiningKeys(Player player) {
+	public void pollMiningKeys(Player player)
+	{
 
 		// Game.redrawAll();
 		boolean done = false;
 		// while(!done)
 		// {
-		for (Event event : this.window.pollEvents()) {
-			if (event.type == Event.Type.KEY_PRESSED) {
+		for (Event event : this.window.pollEvents())
+		{
+			if (event.type == Event.Type.KEY_PRESSED)
+			{
 
 				Tile tile = null;
 				KeyEvent keyEvent = event.asKeyEvent();
-				switch (keyEvent.key) {
+				switch (keyEvent.key)
+				{
 				case ESCAPE:
 					this.actionHandler.setMine(false);
 					player.setMining(false);
@@ -175,11 +189,13 @@ public class SFMLInputManager {
 					break;
 				}
 
-				if (tile == null) {
+				if (tile == null)
+				{
 					return;
 				}
 				if (!player.getCurrentMap().checkTerrainCollision(tile)
-						&& tile.getType() == "mountain") {
+						&& tile.getType() == "mountain")
+				{
 					player.setMiningSuccess(true);
 					player.setLookingAt(tile);
 					// return true;

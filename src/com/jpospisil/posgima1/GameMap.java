@@ -6,12 +6,14 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
 
-public class GameMap {
-	private Tile tile;
-	private ArrayList<Tile> tileArray;
-	private ArrayList<String> rawArray;
+public class GameMap
+{
+	private Tile				tile;
+	private ArrayList<Tile>		tileArray;
+	private ArrayList<String>	rawArray;
 
-	public GameMap() {
+	public GameMap()
+	{
 		MapGenerator mapGenerator = new MapGenerator(
 				GameConstants.MAP_GENERATOR_COLS,
 				GameConstants.MAP_GENERATOR_ROWS);
@@ -22,7 +24,8 @@ public class GameMap {
 		this.setTilePositions();
 	}
 
-	public boolean checkTerrainCollision(Tile tile) {
+	public boolean checkTerrainCollision(Tile tile)
+	{
 		if (tile == null)
 			return false;
 		if (tile.getCanPass() == false)
@@ -31,13 +34,16 @@ public class GameMap {
 			return true;
 	}
 
-	public Tile getRandomFoodWorthyTile() {
+	public Tile getRandomFoodWorthyTile()
+	{
 		Random rand = new Random();
 		int n = rand.nextInt(this.tileArray.size());
 		boolean foodPlaced = false;
-		while (!foodPlaced) {
+		while (!foodPlaced)
+		{
 			String type = this.tileArray.get(n).getType();
-			switch (type) {
+			switch (type)
+			{
 			case "grass":
 				foodPlaced = true;
 				break;
@@ -58,25 +64,31 @@ public class GameMap {
 		return this.tileArray.get(n);
 	}
 
-	public Tile getRandomTileByType(String type) {
+	public Tile getRandomTileByType(String type)
+	{
 		Random rand = new Random();
 		int n = rand.nextInt(this.tileArray.size());
-		while (this.tileArray.get(n).getType() != type) {
+		while (this.tileArray.get(n).getType() != type)
+		{
 			n = rand.nextInt(this.tileArray.size());
 		}
 		return this.tileArray.get(n);
 	}
 
-	public ArrayList<String> getRawArray() {
+	public ArrayList<String> getRawArray()
+	{
 		return rawArray;
 	}
 
-	public ArrayList<Tile> getTileArray() {
+	public ArrayList<Tile> getTileArray()
+	{
 		return tileArray;
 	}
 
-	public Tile getTileFromCoords(int x, int y) {
-		for (Tile tile : tileArray) {
+	public Tile getTileFromCoords(int x, int y)
+	{
+		for (Tile tile : tileArray)
+		{
 			if (tile.getX() == x && tile.getY() == y)
 				return tile;
 		}
@@ -84,7 +96,8 @@ public class GameMap {
 	}
 
 	public ArrayList<Tile> getTilesInRange(Player player, int left, int right,
-			int up, int down) {
+			int up, int down)
+	{
 		ArrayList<Tile> visibleTiles = new ArrayList<Tile>();
 		int limitNegX = player.getCurrentTile().getX()
 				- (left * GameConstants.DEFAULT_FONT_SIZE);
@@ -94,12 +107,15 @@ public class GameMap {
 				- (up * GameConstants.DEFAULT_FONT_SIZE);
 		int limitPosY = player.getCurrentTile().getY()
 				+ (down * GameConstants.DEFAULT_FONT_SIZE);
-		for (Tile tile : this.tileArray) {
+		for (Tile tile : this.tileArray)
+		{
 			if ((tile.getX() < limitPosX && tile.getX() > limitNegX)
-					&& (tile.getY() < limitPosY && tile.getY() > limitNegY)) {
+					&& (tile.getY() < limitPosY && tile.getY() > limitNegY))
+			{
 				tile.setVisibility(true);
 				visibleTiles.add(tile);
-			} else
+			}
+			else
 				tile.setVisibility(false);
 
 		}
@@ -107,8 +123,10 @@ public class GameMap {
 
 	}
 
-	public boolean hasTileType(String type) {
-		for (Tile tile : this.tileArray) {
+	public boolean hasTileType(String type)
+	{
+		for (Tile tile : this.tileArray)
+		{
 			if (tile.getType() == type)
 				return true;
 		}
@@ -126,24 +144,31 @@ public class GameMap {
 	//
 	// }
 	// Loads a simple text file format into rawArray
-	private void loadFromFile(String fileName) {
-		try {
+	private void loadFromFile(String fileName)
+	{
+		try
+		{
 			Scanner in = new Scanner(new FileReader(fileName));
-			while (in.hasNextLine()) {
+			while (in.hasNextLine())
+			{
 				rawArray.add(in.nextLine());
 			}
 			in.close();
 			if (GameConstants.DEBUG)
 				GameConstants.printDebugMessage(fileName + " loaded ok");
-		} catch (FileNotFoundException e) {
+		}
+		catch (FileNotFoundException e)
+		{
 			e.printStackTrace();
 			if (GameConstants.DEBUG)
 				GameConstants.printDebugMessage(fileName + " failed to load");
 		}
 	}
 
-	private void setTilePassableFlag() {
-		switch (tile.getType()) {
+	private void setTilePassableFlag()
+	{
+		switch (tile.getType())
+		{
 		case "mountain":
 			tile.setPassableFlag(false);
 			break;
@@ -158,9 +183,12 @@ public class GameMap {
 		}
 	}
 
-	private void setTilePositions() {
-		for (int y = 0; y < rawArray.size(); y++) {
-			for (int x = 0; x < rawArray.get(y).length(); x++) {
+	private void setTilePositions()
+	{
+		for (int y = 0; y < rawArray.size(); y++)
+		{
+			for (int x = 0; x < rawArray.get(y).length(); x++)
+			{
 				int X = x * GameConstants.DEFAULT_FONT_SIZE;
 				int Y = y * GameConstants.DEFAULT_FONT_SIZE;
 				char glyph = rawArray.get(y).charAt(x);
@@ -172,8 +200,10 @@ public class GameMap {
 		}
 	}
 
-	private String setTileType(char c) {
-		switch (c) {
+	private String setTileType(char c)
+	{
+		switch (c)
+		{
 		case '.':
 			return "grass";
 

@@ -6,16 +6,18 @@ import org.jsfml.graphics.Color;
 import org.jsfml.graphics.Text;
 import org.jsfml.graphics.View;
 
-public class SFMLUI {
+public class SFMLUI
+{
 
-	public ArrayList<String> messages = new ArrayList<String>();
+	public ArrayList<String>	messages	= new ArrayList<String>();
 
-	private SFMLRenderWindow window;
-	private View sideView;
-	private View bottomView;
-	private Game game;
+	private SFMLRenderWindow	window;
+	private View				sideView;
+	private View				bottomView;
+	private Game				game;
 
-	public SFMLUI(SFMLRenderWindow window, Game game) {
+	public SFMLUI(SFMLRenderWindow window, Game game)
+	{
 		this.game = game;
 		this.window = window;
 		sideView = new View(window.getRenderWindow().getDefaultView()
@@ -32,10 +34,12 @@ public class SFMLUI {
 
 	// currentview is used to reset it after
 
-	public void drawBottomUI() {
+	public void drawBottomUI()
+	{
 		window.getRenderWindow().setView(bottomView);
 		String madeMessage = "";
-		for (int i = messages.size() - 1; i > 0; i--) {
+		for (int i = messages.size() - 1; i > 0; i--)
+		{
 			madeMessage += messages.get(i);
 		}
 		Text text = new Text(madeMessage, GameConstants.FONTS.getDefaultFont(),
@@ -47,7 +51,8 @@ public class SFMLUI {
 		window.getRenderWindow().draw(text);
 	}
 
-	public void drawSideUI(View currentView, Player player) {
+	public void drawSideUI(View currentView, Player player)
+	{
 
 		int health = player.getHealth();
 		int digs = player.getDigCount();
@@ -58,15 +63,13 @@ public class SFMLUI {
 
 		window.getRenderWindow().setView(this.sideView);
 		Text text = new Text();
-		text.setString(player.getName() + "\n" 
-										+ "\n" 
-										+ "Health: " + player.getHealth() + "\n" 
-										+ "Hunger: " + player.getHungerLevel() + "\n" 
-										+ "Food: " + food + "\n"
-										+ "Seeds: " + player.getSeedCount() + "\n"
-										+ "Digs: " + digs + "\n"
-										+ "Moves: " + moves + "\n" 
-										+ "Day: " + game.getHoursElapsed()/24 + " Hour: " + game.getHoursElapsed()%24 + "\n"
+		text.setString(player.getName() + "\n" + "\n" + "Health: "
+				+ player.getHealth() + "\n" + "Hunger: "
+				+ player.getHungerLevel() + "\n" + "Food: " + food + "\n"
+				+ "Seeds: " + player.getSeedCount() + "\n" + "Digs: " + digs
+				+ "\n" + "Moves: " + moves + "\n" + "Day: "
+				+ game.getHoursElapsed() / 24 + " Hour: "
+				+ game.getHoursElapsed() % 24 + "\n"
 				+ player.getCurrentTile().getType() + "\n" + "");
 		text.setFont(GameConstants.FONTS.getDefaultFont());
 		text.setPosition(0, 0);

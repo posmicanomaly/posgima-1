@@ -5,121 +5,66 @@ import java.util.Random;
 
 import org.jsfml.graphics.Color;
 
-public class Game{
-	private ActionHandler actionHandler;
-	private ArrayList<Npc> npcArray;
-	public SFMLRenderWindow window;
-	public SFMLASCIIRender Renderer;
-	public MapManager mapManager;
-	public SFMLInputManager input;
-	public SFMLUI ui;
-	public Player player;
-	public Npc npc;
-	
-	private int hoursElapsed;
+public class Game
+{
+	private ActionHandler	actionHandler;
+	private ArrayList<Npc>	npcArray;
+	public SFMLRenderWindow	window;
+	public SFMLASCIIRender	Renderer;
+	public MapManager		mapManager;
+	public SFMLInputManager	input;
+	public SFMLUI			ui;
+	public Player			player;
+	public Npc				npc;
 
-	public int getHoursElapsed() {
-		return hoursElapsed;
-	}
+	private int				hoursElapsed;
 
-	public void setHoursElapsed(int hoursElapsed) {
-		this.hoursElapsed = hoursElapsed;
-	}
+	private boolean			newGame;
 
-	private boolean newGame;
-
-	public Game() {
+	public Game()
+	{
 		this.init();
 		this.newGame();
 	}
-	
-	private void growCrops()
-	{
-		if(this.getHoursElapsed()%24 == 0)
-		{
-			for(int i = 0; i < this.mapManager.getGameMap().getTileArray().size(); i++)
-			{
-				Tile tile = this.mapManager.getGameMap().getTileArray().get(i);
-				if(tile.getType() == "farm")
-				{
-					if(tile.getItems().size() < 5)
-					{
-						tile.addItem(new Item("food"));
-						tile.setDug(false);
-					}
-					else
-					{
-						tile.addItem(new Item("seed"));
-						tile.setDug(false);
-					}
-				}
-			}
-		}
-	}
-	private void spawnNpc()
-	{
-		this.npcArray = new ArrayList<Npc>();
-		for(int i = 0; i < new Random().nextInt(GameConstants.MAX_DEER_SEED); i++)
-		{
-			Npc npc = new Npc();
-			npc.setCurrentMap(this.mapManager.getGameMap());
-			npc.setCurrentTile(this.mapManager.getGameMap().getRandomFoodWorthyTile());
-			this.npcArray.add(npc);
-		}
-		
-	}
-	private void regenerateDugTerrain()
-	{
-		for(Tile tile : this.mapManager.getGameMap().getTileArray())
-		{
-			if(tile.getDug())
-			{
-			if(tile.getType()!= "farm")
-			{
-				//24hrs * whatever for days
-				if(tile.getDugDuration() > 24 * 1)
-				{
-					if(new Random().nextInt(10) < 1) {
-					tile.setDug(false);
-					}
-				}
-				else
-				{
-					tile.setDugDuration(tile.getDugDuration() + 1);
-				}
-			}
-			}
-		}
-	}
 
-	private void continueGame() {
+	private void continueGame()
+	{
 
-		if (player.movedLastTurn) {
-			this.setHoursElapsed(this.getHoursElapsed()+1);
+		if (player.movedLastTurn)
+		{
+			this.setHoursElapsed(this.getHoursElapsed() + 1);
 			player.movedLastTurn = false;
 			player.processPlayerRules();
-			
-			//is this order correct
+
+			// is this order correct
 			this.growCrops();
 			this.regenerateDugTerrain();
-			for(Npc npc : this.npcArray)
+			for (Npc npc : this.npcArray)
 			{
 
-
 				int rand = new Random().nextInt(10);
-				switch(rand)
+				switch (rand)
 				{
-				case 0: npc.move("north"); break;
-				case 1: npc.move("south"); break;
-				case 2: npc.move("west"); break;
-				case 3: npc.move("east"); break;
-				default: break;
+				case 0:
+					npc.move("north");
+					break;
+				case 1:
+					npc.move("south");
+					break;
+				case 2:
+					npc.move("west");
+					break;
+				case 3:
+					npc.move("east");
+					break;
+				default:
+					break;
 				}
 			}
 			GameConstants.RENDER_REQUIRED = true;
 
 		}
-		//if (GameConstants.RENDER_REQUIRED)
+		// if (GameConstants.RENDER_REQUIRED)
 		this.redrawAll();
 		if (this.actionHandler.isMine())
 			input.pollMiningKeys(player);
@@ -128,39 +73,54 @@ public class Game{
 		this.processActions();
 	}
 
-	private void drawUI() {
+	private void drawUI()
+	{
 		ui.drawSideUI(window.getWorldView(), player);
 		ui.drawBottomUI();
 	}
 
-	public void gameLoop() {
-		while (window.isOpen()) {
+	public void gameLoop()
+	{
+		while (window.isOpen())
+		{
 
-			if (isNewGame()) {
+			if (isNewGame())
+			{
 				this.newGame();
 			}
-			if (GameConstants.won) {
+			if (GameConstants.won)
+			{
 				wonGame();
 			}
-			if (player.isAlive()) {
+			if (player.isAlive())
+			{
 				continueGame();
 			}
 
-			if (!player.isAlive()) {
+			if (!player.isAlive())
+			{
 				lostGame();
 			}
 		}
 	}
 
-	private String getRandomValidTileType(String foundMessage) {
+	public int getHoursElapsed()
+	{
+		return hoursElapsed;
+	}
+
+	private String getRandomValidTileType(String foundMessage)
+	{
 		Random random = new Random();
 		String type = "";
 		boolean typePresentPassed = false;
 
-		while (!typePresentPassed) {
+		while (!typePresentPassed)
+		{
 			int t = random.nextInt(4);
 
-			switch (t) {
+			switch (t)
+			{
 			case 0:
 				type = "grass";
 				break;
@@ -175,7 +135,8 @@ public class Game{
 				break;
 			}
 			System.out.println("\n" + type + " searching...");
-			if (mapManager.getGameMap().hasTileType(type)) {
+			if (mapManager.getGameMap().hasTileType(type))
+			{
 				System.out.println(type + " " + foundMessage);
 				return type;
 
@@ -184,17 +145,46 @@ public class Game{
 		return null;
 	}
 
-	public void init() {
+	private void growCrops()
+	{
+		if (this.getHoursElapsed() % 24 == 0)
+		{
+			for (int i = 0; i < this.mapManager.getGameMap().getTileArray()
+					.size(); i++)
+			{
+				Tile tile = this.mapManager.getGameMap().getTileArray().get(i);
+				if (tile.getType() == "farm")
+				{
+					if (tile.getItems().size() < 5)
+					{
+						tile.addItem(new Item("food"));
+						tile.setDug(false);
+					}
+					else
+					{
+						tile.addItem(new Item("seed"));
+						tile.setDug(false);
+					}
+				}
+			}
+		}
+	}
+
+	public void init()
+	{
 		window = new SFMLRenderWindow(GameConstants.FORMATTED_GAME_INFO);//
 		setNewGame(true);
 	}
 
-	public boolean isNewGame() {
+	public boolean isNewGame()
+	{
 		return newGame;
 	}
 
-	private void lostGame() {
-		if (GameConstants.RENDER_REQUIRED) {
+	private void lostGame()
+	{
+		if (GameConstants.RENDER_REQUIRED)
+		{
 			window.getRenderWindow().clear(new Color(10, 10, 10));
 			Renderer.deathScreen(player);
 			drawUI();
@@ -205,7 +195,8 @@ public class Game{
 		input.pollDeathKeyEvents(player);
 	}
 
-	public void newGame() {
+	public void newGame()
+	{
 		this.actionHandler = new ActionHandler();
 		GameConstants.won = false;
 		Renderer = new SFMLASCIIRender(window);
@@ -240,28 +231,36 @@ public class Game{
 		setNewGame(false);
 	}
 
-	private void processActions() {
+	private void processActions()
+	{
 		ActionHandler a = this.actionHandler;
 		// Add a player state, action manager, check the action requested with
 		// the state
 		// and then do it here instead, replace the constants
 
-		if (a.isMine()) {
-			if (!player.isMining()) {
+		if (a.isMine())
+		{
+			if (!player.isMining())
+			{
 				ui.messages.add("Mine in which direction? (esc to cancel)\n");
 				this.redrawAll();
 				player.setMining(true);
 
 			}
-			if (player.isMining()) {
-				if (player.isMiningSuccess()) {
+			if (player.isMining())
+			{
+				if (player.isMiningSuccess())
+				{
 
-					if (player.mine()) {
+					if (player.mine())
+					{
 						this.ui.messages
 								.add("You mined through the mountain!\n");
 						player.getLookingAt().setType("road");
 						player.getLookingAt().setPassableFlag(true);
-					} else {
+					}
+					else
+					{
 						this.ui.messages.add("Too hungry to mine..\n");
 
 					}
@@ -274,34 +273,43 @@ public class Game{
 			GameConstants.RENDER_REQUIRED = true;
 		}
 
-		if (a.isDig()) {
+		if (a.isDig())
+		{
 			player.dig();
 			a.setDig(false);
 			player.setMovedLastTurn(true);
 		}
 
-		if (a.isBuildRoad()) {
-			if (!player.buildRoad()) {
+		if (a.isBuildRoad())
+		{
+			if (!player.buildRoad())
+			{
 				this.ui.messages.add("Too hungry to make a road..\n");
 				this.redrawAll();
-			} else {
+			}
+			else
+			{
 				this.ui.messages
 						.add("You clear the terrain, creating a road\n");
 				player.setMovedLastTurn(true);
 			}
 			a.setBuildRoad(false);
 		}
-		if(a.isBuildFarm()) {
+		if (a.isBuildFarm())
+		{
 			String message = player.buildFarm();
-			if(message == "hungerError") {
+			if (message == "hungerError")
+			{
 				this.ui.messages.add("Too hungry to build a farm, lol\n");
 				this.redrawAll();
 			}
-			else if(message == "noSeeds"){
+			else if (message == "noSeeds")
+			{
 				this.ui.messages.add("You need seeds to plant\n");
 				this.redrawAll();
 			}
-			else if(message == "built"){
+			else if (message == "built")
+			{
 				this.ui.messages.add("You built a farm\n");
 				player.setMovedLastTurn(true);
 			}
@@ -310,36 +318,45 @@ public class Game{
 
 		// TODO something about motivation stat, and being too lazy to build a
 		// house
-		if (a.isBuildHouse()) {
-			if (!player.buildHouse()) {
+		if (a.isBuildHouse())
+		{
+			if (!player.buildHouse())
+			{
 				this.ui.messages.add("Too hungry to build a house..\n");
 				this.redrawAll();
-			} else {
+			}
+			else
+			{
 				this.ui.messages.add("You built a house\n");
 				player.setMovedLastTurn(true);
 			}
 			a.setBuildHouse(false);
 		}
-		if (a.isSleep()) {
+		if (a.isSleep())
+		{
 			String message = player.sleep();
-			if(message == "sleeping")
+			if (message == "sleeping")
 			{
 				this.ui.messages.add("Zzz\n");
-				try {
+				try
+				{
 					Thread.sleep(100);
-				} catch (InterruptedException e) {
+				}
+				catch (InterruptedException e)
+				{
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
-			else if(message == "tooHungry")
+			else if (message == "tooHungry")
 			{
 				this.ui.messages.add("Too hungry to sleep\n");
 				a.setSleep(false);
 			}
 		}
 
-		if (a.isIncreaseMapSize()) {
+		if (a.isIncreaseMapSize())
+		{
 			GameConstants.MAP_GENERATOR_COLS += 20;
 			GameConstants.MAP_GENERATOR_ROWS += 20;
 			GameConstants.resetSeedValues();
@@ -351,7 +368,8 @@ public class Game{
 			a.setIncreaseMapSize(false);
 		}
 
-		if (a.isDecreaseMapSize()) {
+		if (a.isDecreaseMapSize())
+		{
 			GameConstants.MAP_GENERATOR_COLS -= 20;
 			GameConstants.MAP_GENERATOR_ROWS -= 20;
 			GameConstants.resetSeedValues();
@@ -364,7 +382,8 @@ public class Game{
 			a.setDecreaseMapSize(false);
 		}
 
-		if (a.isRegenerateMap()) {
+		if (a.isRegenerateMap())
+		{
 			this.ui.messages
 					.add("---GENERATING WORLD, THIS COULD TAKE A WHILE---\n");
 			this.redrawAll();
@@ -373,7 +392,8 @@ public class Game{
 		}
 	}
 
-	public void redrawAll() {
+	public void redrawAll()
+	{
 		window.getRenderWindow().clear(new Color(10, 10, 10));
 		Renderer.renderMap(mapManager.getGameMap(), player);
 
@@ -383,35 +403,87 @@ public class Game{
 		Renderer.renderAllNpc(this.npcArray);
 		this.drawUI();
 		window.getRenderWindow().display();
-	}	
+	}
 
-	public void setNewGame(boolean b) {
+	private void regenerateDugTerrain()
+	{
+		for (Tile tile : this.mapManager.getGameMap().getTileArray())
+		{
+			if (tile.getDug())
+			{
+				if (tile.getType() != "farm")
+				{
+					// 24hrs * whatever for days
+					if (tile.getDugDuration() > 24 * 1)
+					{
+						if (new Random().nextInt(10) < 1)
+						{
+							tile.setDug(false);
+						}
+					}
+					else
+					{
+						tile.setDugDuration(tile.getDugDuration() + 1);
+					}
+				}
+			}
+		}
+	}
+
+	public void setHoursElapsed(int hoursElapsed)
+	{
+		this.hoursElapsed = hoursElapsed;
+	}
+
+	public void setNewGame(boolean b)
+	{
 		newGame = b;
 	}
 
-	private void setupFood() {
+	private void setupFood()
+	{
 		// food
-		for (int i = 0; i < GameConstants.MAX_FOOD_SEED; i++) {
+		for (int i = 0; i < GameConstants.MAX_FOOD_SEED; i++)
+		{
 			mapManager.getGameMap().getRandomFoodWorthyTile()
 					.addItem(new Item("food"));
 		}
 	}
 
-	private void setupPlayer() {
+	private void setupPlayer()
+	{
 		player = new Player();
 		player.setCurrentMap(mapManager.getGameMap());
 		player.setCurrentTile(player.getCurrentMap().getRandomTileByType(
 				getRandomValidTileType("player tile")));
 	}
 
-	private void setupWinTile() {
-		mapManager.getGameMap().getRandomTileByType(getRandomValidTileType("win tile"))
+	private void setupWinTile()
+	{
+		mapManager.getGameMap()
+				.getRandomTileByType(getRandomValidTileType("win tile"))
 				.addItem(new Item("win"));
 	}
 
-	private void wonGame() {
+	private void spawnNpc()
+	{
+		this.npcArray = new ArrayList<Npc>();
+		for (int i = 0; i < new Random().nextInt(GameConstants.MAX_DEER_SEED); i++)
+		{
+			Npc npc = new Npc();
+			npc.setCurrentMap(this.mapManager.getGameMap());
+			npc.setCurrentTile(this.mapManager.getGameMap()
+					.getRandomFoodWorthyTile());
+			this.npcArray.add(npc);
+		}
+
+	}
+
+	private void wonGame()
+	{
 		GameConstants.RENDER_REQUIRED = true;
-		if (GameConstants.RENDER_REQUIRED) {
+		if (GameConstants.RENDER_REQUIRED)
+		{
 			window.getRenderWindow().clear(new Color(10, 10, 10));
 			Renderer.winScreen(player);
 			drawUI();

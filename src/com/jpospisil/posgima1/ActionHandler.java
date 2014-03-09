@@ -2,22 +2,16 @@ package com.jpospisil.posgima1;
 
 import java.util.ArrayList;
 
-public class ActionHandler {
+public class ActionHandler
+{
 
-	private ArrayList<Boolean> actions;
-	private boolean mine, buildRoad, eat, dig, swim, buildHouse, buildFarm, sleep,
-			increaseMapSize, decreaseMapSize, regenerateMap;
+	private ArrayList<Boolean>	actions;
+	private boolean				mine, buildRoad, eat, dig, swim, buildHouse,
+			buildFarm, sleep, increaseMapSize, decreaseMapSize, regenerateMap;
 
-	public boolean isBuildFarm() {
-		return buildFarm;
-	}
+	public ActionHandler()
+	{
 
-	public void setBuildFarm(boolean buildFarm) {
-		this.buildFarm = buildFarm;
-	}
-
-	public ActionHandler() {
-		
 		this.mine = false;
 		this.buildRoad = false;
 		this.eat = false;
@@ -31,91 +25,123 @@ public class ActionHandler {
 		this.regenerateMap = false;
 	}
 
-	public ArrayList<Boolean> getActions() {
+	public ArrayList<Boolean> getActions()
+	{
 		return actions;
 	}
 
-	public boolean isBuildHouse() {
+	public boolean isBuildFarm()
+	{
+		return buildFarm;
+	}
+
+	public boolean isBuildHouse()
+	{
 		return buildHouse;
 	}
 
-	public boolean isBuildRoad() {
+	public boolean isBuildRoad()
+	{
 		return buildRoad;
 	}
 
-	public boolean isDecreaseMapSize() {
+	public boolean isDecreaseMapSize()
+	{
 		return decreaseMapSize;
 	}
 
-	public boolean isDig() {
+	public boolean isDig()
+	{
 		return dig;
 	}
 
-	public boolean isEat() {
+	public boolean isEat()
+	{
 		return eat;
 	}
 
-	public boolean isIncreaseMapSize() {
+	public boolean isIncreaseMapSize()
+	{
 		return increaseMapSize;
 	}
 
-	public boolean isMine() {
+	public boolean isMine()
+	{
 		return mine;
 	}
 
-	public boolean isRegenerateMap() {
+	public boolean isRegenerateMap()
+	{
 		return regenerateMap;
 	}
 
-	public boolean isSleep() {
+	public boolean isSleep()
+	{
 		return sleep;
 	}
 
-	public boolean isSwim() {
+	public boolean isSwim()
+	{
 		return swim;
 	}
 
-	public void setActions(ArrayList<Boolean> actions) {
+	public void setActions(ArrayList<Boolean> actions)
+	{
 		this.actions = actions;
 	}
 
-	public void setBuildHouse(boolean buildHouse) {
+	public void setBuildFarm(boolean buildFarm)
+	{
+		this.buildFarm = buildFarm;
+	}
+
+	public void setBuildHouse(boolean buildHouse)
+	{
 		this.buildHouse = buildHouse;
 	}
 
-	public void setBuildRoad(boolean buildRoad) {
+	public void setBuildRoad(boolean buildRoad)
+	{
 		this.buildRoad = buildRoad;
 	}
 
-	public void setDecreaseMapSize(boolean decreaseMapSize) {
+	public void setDecreaseMapSize(boolean decreaseMapSize)
+	{
 		this.decreaseMapSize = decreaseMapSize;
 	}
 
-	public void setDig(boolean dig) {
+	public void setDig(boolean dig)
+	{
 		this.dig = dig;
 	}
 
-	public void setEat(boolean eat) {
+	public void setEat(boolean eat)
+	{
 		this.eat = eat;
 	}
 
-	public void setIncreaseMapSize(boolean increaseMapSize) {
+	public void setIncreaseMapSize(boolean increaseMapSize)
+	{
 		this.increaseMapSize = increaseMapSize;
 	}
 
-	public void setMine(boolean mine) {
+	public void setMine(boolean mine)
+	{
 		this.mine = mine;
 	}
 
-	public void setRegenerateMap(boolean regenerateMap) {
+	public void setRegenerateMap(boolean regenerateMap)
+	{
 		this.regenerateMap = regenerateMap;
 	}
 
-	public void setSleep(boolean sleep) {
+	public void setSleep(boolean sleep)
+	{
 		this.sleep = sleep;
 	}
 
-	public void setSwim(boolean swim) {
+	public void setSwim(boolean swim)
+	{
 		this.swim = swim;
 	}
 

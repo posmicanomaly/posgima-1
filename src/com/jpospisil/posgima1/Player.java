@@ -3,25 +3,27 @@ package com.jpospisil.posgima1;
 import java.util.Iterator;
 import java.util.Random;
 
-public class Player {
+public class Player
+{
 
-	protected Tile currentTile;
-	private Tile lookingAt;
-	protected GameMap currentMap;
-	public boolean movedLastTurn;
+	protected Tile		currentTile;
+	private Tile		lookingAt;
+	protected GameMap	currentMap;
+	public boolean		movedLastTurn;
 
-	private String name;
-	private boolean alive;
-	private boolean isMining;
-	private boolean miningSuccess;
-	private int moves;
-	private int digCount;
-	private int foodCount;
-	private int seedCount;
-	private int hungerLevel;
-	private int health;
+	private String		name;
+	private boolean		alive;
+	private boolean		isMining;
+	private boolean		miningSuccess;
+	private int			moves;
+	private int			digCount;
+	private int			foodCount;
+	private int			seedCount;
+	private int			hungerLevel;
+	private int			health;
 
-	public Player() {
+	public Player()
+	{
 		currentTile = null;
 		currentMap = null;
 		this.lookingAt = null;
@@ -40,33 +42,12 @@ public class Player {
 		// TODO Auto-generated constructor stub
 	}
 
-	public int getSeedCount() {
-		return seedCount;
-	}
-
-	public void setSeedCount(int seedCount) {
-		this.seedCount = seedCount;
-	}
-
-	public void setAlive(boolean alive) {
-		this.alive = alive;
-	}
-
-	public boolean buildHouse() {
-		if (this.getHungerLevel() > 0) {
-			// SFMLUI.messages.add("Too hungry to build a house..\n");
-			return false;
-		} else {
-			this.getCurrentTile().setType("house");
-			this.setHungerLevel(10);
-			return true;
-		}
-	}
-	
-	public String buildFarm() {
-		if(this.getSeedCount() > 0)
+	public String buildFarm()
+	{
+		if (this.getSeedCount() > 0)
 		{
-			if (this.getHungerLevel() > 0) {
+			if (this.getHungerLevel() > 0)
+			{
 				return "hungerError";
 			}
 			else
@@ -80,8 +61,25 @@ public class Player {
 		return "noSeeds";
 	}
 
-	public boolean buildRoad() {
-		if (this.getHungerLevel() > 5) {
+	public boolean buildHouse()
+	{
+		if (this.getHungerLevel() > 0)
+		{
+			// SFMLUI.messages.add("Too hungry to build a house..\n");
+			return false;
+		}
+		else
+		{
+			this.getCurrentTile().setType("house");
+			this.setHungerLevel(10);
+			return true;
+		}
+	}
+
+	public boolean buildRoad()
+	{
+		if (this.getHungerLevel() > 5)
+		{
 			//
 			return false;
 		}
@@ -93,35 +91,39 @@ public class Player {
 
 	}
 
-	private void die() {
+	private void die()
+	{
 		this.alive = false;
 		GameConstants.RENDER_REQUIRED = true;
 	}
 
-	public void dig() {
+	public void dig()
+	{
 
-			for(Item item : this.currentTile.getItems())
+		for (Item item : this.currentTile.getItems())
+		{
+			if (item.getName() == "food")
+				this.setFoodCount(this.getFoodCount() + 1);
+			else if (item.getName() == "seed")
 			{
-				if(item.getName() == "food")
-					this.setFoodCount(this.getFoodCount() + 1);
-				else if(item.getName() == "seed")
-				{
-					this.setSeedCount(this.getSeedCount() + 1);
-				}
-				else if(item.getName() == "win")
-				{
-					GameConstants.won = true;
-				}
+				this.setSeedCount(this.getSeedCount() + 1);
 			}
-			this.currentTile.clearItems();
-			this.setMoves(this.getMoves() + 1);
-			this.setDigCount(this.getDigCount() + 1);
-			this.currentTile.setDug(true);
-		
+			else if (item.getName() == "win")
+			{
+				GameConstants.won = true;
+			}
+		}
+		this.currentTile.clearItems();
+		this.setMoves(this.getMoves() + 1);
+		this.setDigCount(this.getDigCount() + 1);
+		this.currentTile.setDug(true);
+
 	}
 
-	public void eat() {
-		if (this.getFoodCount() > 0) {
+	public void eat()
+	{
+		if (this.getFoodCount() > 0)
+		{
 			this.hungerLevel -= 10;
 			if (this.hungerLevel < 0)
 				this.hungerLevel = 0;
@@ -131,74 +133,97 @@ public class Player {
 		}
 	}
 
-	public GameMap getCurrentMap() {
+	public GameMap getCurrentMap()
+	{
 		return this.currentMap;
 	}
 
-	public Tile getCurrentTile() {
+	public Tile getCurrentTile()
+	{
 		return this.currentTile;
 	}
 
-	public int getDigCount() {
+	public int getDigCount()
+	{
 		return digCount;
 	}
 
-	public int getFoodCount() {
+	public int getFoodCount()
+	{
 		return foodCount;
 	}
 
-	public int getHealth() {
+	public int getHealth()
+	{
 		return health;
 	}
 
-	public int getHungerLevel() {
+	public int getHungerLevel()
+	{
 		return hungerLevel;
 	}
 
-	public Tile getLookingAt() {
+	public Tile getLookingAt()
+	{
 		return lookingAt;
 	}
 
-	public int getMoves() {
+	public int getMoves()
+	{
 		return moves;
 	}
 
-	public String getName() {
+	public String getName()
+	{
 		return name;
 	}
 
-	public boolean isAlive() {
+	public int getSeedCount()
+	{
+		return seedCount;
+	}
+
+	public boolean isAlive()
+	{
 		return this.alive;
 	}
 
-	public boolean isMining() {
+	public boolean isMining()
+	{
 		return isMining;
 	}
 
-	public boolean isMiningSuccess() {
+	public boolean isMiningSuccess()
+	{
 		return miningSuccess;
 	}
 
-	public boolean isMovedLastTurn() {
+	public boolean isMovedLastTurn()
+	{
 		return movedLastTurn;
 	}
 
-	public boolean mine() {
+	public boolean mine()
+	{
 		// SFMLUI.messages.add("You mined the mountain, clearing a path!\n");
 		this.miningSuccess = false;
-		if (this.getHungerLevel() <= 5) {
+		if (this.getHungerLevel() <= 5)
+		{
 			this.hungerLevel += 4;
 			if (this.hungerLevel > 10)
 				this.hungerLevel = 10;
 			return true;
-		} else
+		}
+		else
 			return false;
 
 	}
 
-	public boolean move(String direction) {
+	public boolean move(String direction)
+	{
 		Tile nextTile = null;
-		switch (direction) {
+		switch (direction)
+		{
 		case "north":
 			nextTile = currentMap.getTileFromCoords(this.currentTile.getX(),
 					this.currentTile.getY() - GameConstants.DEFAULT_FONT_SIZE);
@@ -222,8 +247,10 @@ public class Player {
 		default:
 			return false;
 		}
-		if (nextTile != null) {
-			if (currentMap.checkTerrainCollision(nextTile)) {
+		if (nextTile != null)
+		{
+			if (currentMap.checkTerrainCollision(nextTile))
+			{
 
 				if (nextTile.getType() == "water")
 					this.swim();
@@ -231,7 +258,9 @@ public class Player {
 				this.setMovedLastTurn(true);
 				this.setMoves(this.getMoves() + 1);
 				return true;
-			} else {
+			}
+			else
+			{
 				// SFMLUI.messages.add("that " + nextTile.getType() +
 				// " hurt\n");
 				return false;
@@ -241,16 +270,20 @@ public class Player {
 
 	}
 
-	public void processPlayerRules() {
-		if (!this.alive) {
+	public void processPlayerRules()
+	{
+		if (!this.alive)
+		{
 			return;
 		}
-		if (this.getHealth() < GameConstants.MINIMUM_HEALTH) {
+		if (this.getHealth() < GameConstants.MINIMUM_HEALTH)
+		{
 			GameConstants.DEATH_MESSAGE = "YOU STARVED!";
 			this.die();
 			return;
 		}
-		if (this.getCurrentTile().getType() != "road") {
+		if (this.getCurrentTile().getType() != "road")
+		{
 			if (this.getHungerLevel() < GameConstants.MAXIMUM_HUNGER)
 				this.setHungerLevel(this.getHungerLevel() + 1);
 		}
@@ -259,56 +292,10 @@ public class Player {
 
 	}
 
-	public void setCurrentMap(GameMap currentMap) {
-		this.currentMap = currentMap;
-	}
-
-	public void setCurrentTile(Tile tile) {
-		this.currentTile = tile;
-	}
-
-	public void setDigCount(int digCount) {
-		this.digCount = digCount;
-	}
-
-	public void setFoodCount(int foodCount) {
-		this.foodCount = foodCount;
-	}
-
-	public void setHealth(int health) {
-		this.health = health;
-	}
-
-	public void setHungerLevel(int hungerLevel) {
-		this.hungerLevel = hungerLevel;
-	}
-
-	public void setLookingAt(Tile lookingAt) {
-		this.lookingAt = lookingAt;
-	}
-
-	public void setMining(boolean isMining) {
-		this.isMining = isMining;
-	}
-
-	public void setMiningSuccess(boolean miningSuccess) {
-		this.miningSuccess = miningSuccess;
-	}
-
-	public void setMovedLastTurn(boolean b) {
-		this.movedLastTurn = b;
-	}
-
-	public void setMoves(int moves) {
-		this.moves = moves;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public boolean rest() {
-		if (this.getHungerLevel() < 10) {
+	public boolean rest()
+	{
+		if (this.getHungerLevel() < 10)
+		{
 			this.setHealth(this.getHealth() + 1);
 			this.setMovedLastTurn(true);
 			return true;
@@ -318,10 +305,83 @@ public class Player {
 		// SFMLUI.messages.add("Too hungry to sleep\n");
 
 	}
-	public String sleep() {
-		if (this.getHungerLevel() < 10) {			
-				this.setHealth(this.getHealth() + 1);
-				this.setMovedLastTurn(true);			
+
+	public void setAlive(boolean alive)
+	{
+		this.alive = alive;
+	}
+
+	public void setCurrentMap(GameMap currentMap)
+	{
+		this.currentMap = currentMap;
+	}
+
+	public void setCurrentTile(Tile tile)
+	{
+		this.currentTile = tile;
+	}
+
+	public void setDigCount(int digCount)
+	{
+		this.digCount = digCount;
+	}
+
+	public void setFoodCount(int foodCount)
+	{
+		this.foodCount = foodCount;
+	}
+
+	public void setHealth(int health)
+	{
+		this.health = health;
+	}
+
+	public void setHungerLevel(int hungerLevel)
+	{
+		this.hungerLevel = hungerLevel;
+	}
+
+	public void setLookingAt(Tile lookingAt)
+	{
+		this.lookingAt = lookingAt;
+	}
+
+	public void setMining(boolean isMining)
+	{
+		this.isMining = isMining;
+	}
+
+	public void setMiningSuccess(boolean miningSuccess)
+	{
+		this.miningSuccess = miningSuccess;
+	}
+
+	public void setMovedLastTurn(boolean b)
+	{
+		this.movedLastTurn = b;
+	}
+
+	public void setMoves(int moves)
+	{
+		this.moves = moves;
+	}
+
+	public void setName(String name)
+	{
+		this.name = name;
+	}
+
+	public void setSeedCount(int seedCount)
+	{
+		this.seedCount = seedCount;
+	}
+
+	public String sleep()
+	{
+		if (this.getHungerLevel() < 10)
+		{
+			this.setHealth(this.getHealth() + 1);
+			this.setMovedLastTurn(true);
 			return "sleeping";
 		}
 		return "tooHungry";
@@ -330,10 +390,12 @@ public class Player {
 
 	}
 
-	public void swim() {
+	public void swim()
+	{
 		Random random = new Random();
 		int dead = random.nextInt(10);
-		if (dead < 1) {
+		if (dead < 1)
+		{
 			GameConstants.DEATH_MESSAGE = "EATEN ALIVE!";
 			this.die();
 		}
