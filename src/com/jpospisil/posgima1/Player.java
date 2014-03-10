@@ -124,12 +124,16 @@ public class Player
 	{
 		if (this.getFoodCount() > 0)
 		{
-			this.hungerLevel -= 10;
-			if (this.hungerLevel < 0)
-				this.hungerLevel = 0;
-			this.setFoodCount(this.getFoodCount() - 1);
-			// SFMLUI.messages.add("You eat some food, you feel less hungry!\n");
-			GameConstants.RENDER_REQUIRED = true;
+			
+			if(this.getHungerLevel() > 0)
+			{
+				this.hungerLevel -= 10;
+				if (this.hungerLevel < 0)
+					this.hungerLevel = 0;
+				this.setFoodCount(this.getFoodCount() - 1);				
+				//GameConstants.RENDER_REQUIRED = true;
+			}
+			//if not hungry don't eat, == 0
 		}
 	}
 
@@ -275,20 +279,23 @@ public class Player
 		if (!this.alive)
 		{
 			return;
+		}		
+		
+		if (this.getCurrentTile().getType() != "road")
+		{
+			if (this.getHungerLevel() < GameConstants.MAXIMUM_HUNGER)
+				this.setHungerLevel(this.getHungerLevel() + 1);
 		}
+		
+		if (this.getHungerLevel() >= GameConstants.MAXIMUM_HUNGER)
+			this.setHealth(this.getHealth() - 1);
+		
 		if (this.getHealth() < GameConstants.MINIMUM_HEALTH)
 		{
 			GameConstants.DEATH_MESSAGE = "YOU STARVED!";
 			this.die();
 			return;
 		}
-		if (this.getCurrentTile().getType() != "road")
-		{
-			if (this.getHungerLevel() < GameConstants.MAXIMUM_HUNGER)
-				this.setHungerLevel(this.getHungerLevel() + 1);
-		}
-		if (this.getHungerLevel() >= GameConstants.MAXIMUM_HUNGER)
-			this.setHealth(this.getHealth() - 1);
 
 	}
 

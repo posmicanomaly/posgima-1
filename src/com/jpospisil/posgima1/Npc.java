@@ -38,7 +38,8 @@ public class Npc extends Player
 			nextTile = currentMap.getTileFromCoords(this.currentTile.getX()
 					+ GameConstants.DEFAULT_FONT_SIZE, this.currentTile.getY());
 			break;
-
+		case "stay":
+			return false;
 		default:
 			return false;
 		}

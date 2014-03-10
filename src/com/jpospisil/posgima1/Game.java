@@ -27,7 +27,43 @@ public class Game
 		this.newGame();
 	}
 
-	private void continueGame()
+	private void processAllNpc()
+	{
+		for (Npc npc : this.npcArray)
+		{
+
+			int rand = new Random().nextInt(10);
+			String direction;
+			switch (rand)
+			{
+			case 0:
+				direction = "north";
+				break;
+			case 1:
+				direction = "south";
+				break;
+			case 2:
+				direction = "west";
+				break;
+			case 3:
+				direction = "east";
+				break;
+			default:
+				direction = "stay";
+				break;
+			}
+			npc.move(direction);
+		}
+	}
+	private void determineInputMenu()
+	{
+		if (this.actionHandler.isMine())
+			input.pollMiningKeys(player);
+		else
+			input.pollKeyEvents(player);
+	}
+	
+	private void processNormalGame()
 	{
 
 		if (player.movedLastTurn)
@@ -39,37 +75,17 @@ public class Game
 			// is this order correct
 			this.growCrops();
 			this.regenerateDugTerrain();
-			for (Npc npc : this.npcArray)
-			{
-
-				int rand = new Random().nextInt(10);
-				switch (rand)
-				{
-				case 0:
-					npc.move("north");
-					break;
-				case 1:
-					npc.move("south");
-					break;
-				case 2:
-					npc.move("west");
-					break;
-				case 3:
-					npc.move("east");
-					break;
-				default:
-					break;
-				}
-			}
+			this.processAllNpc();
+			
 			GameConstants.RENDER_REQUIRED = true;
 
 		}
-		// if (GameConstants.RENDER_REQUIRED)
+	}
+	private void continueGame()
+	{
+		this.processNormalGame();				
 		this.redrawAll();
-		if (this.actionHandler.isMine())
-			input.pollMiningKeys(player);
-		else
-			input.pollKeyEvents(player);
+		this.determineInputMenu();		
 		this.processActions();
 	}
 
@@ -88,16 +104,16 @@ public class Game
 			{
 				this.newGame();
 			}
-			if (GameConstants.won)
+			else if (GameConstants.won)
 			{
 				wonGame();
 			}
-			if (player.isAlive())
+			else if (player.isAlive())
 			{
 				continueGame();
 			}
 
-			if (!player.isAlive())
+			else if (!player.isAlive())
 			{
 				lostGame();
 			}
@@ -142,6 +158,7 @@ public class Game
 
 			}
 		}
+		System.out.println(type + " not found");
 		return null;
 	}
 
@@ -183,26 +200,26 @@ public class Game
 
 	private void lostGame()
 	{
-		if (GameConstants.RENDER_REQUIRED)
-		{
+		
 			window.getRenderWindow().clear(new Color(10, 10, 10));
 			Renderer.deathScreen(player);
 			drawUI();
 			window.getRenderWindow().display();
-			GameConstants.RENDER_REQUIRED = false;
-		}
+			
+		
 		this.processActions();
 		input.pollDeathKeyEvents(player);
 	}
 
-	public void newGame()
+	private void newGame()
 	{
-		this.actionHandler = new ActionHandler();
+		ui = new SFMLUI(window, this);
+		this.actionHandler = new ActionHandler(this);
 		GameConstants.won = false;
 		Renderer = new SFMLASCIIRender(window);
 		mapManager = new MapManager();
 		input = new SFMLInputManager(window, this.actionHandler);
-		ui = new SFMLUI(window, this);
+		
 		ui.messages.clear();
 		ui.messages.add("new game\n");
 		ui.messages
@@ -223,7 +240,7 @@ public class Game
 		setupFood();
 		spawnNpc();
 
-		GameConstants.RENDER_REQUIRED = true;
+		//GameConstants.RENDER_REQUIRED = true;
 
 		this.redrawAll();
 		// new Thread(this).start();
@@ -232,164 +249,11 @@ public class Game
 	}
 
 	private void processActions()
-	{
-		ActionHandler a = this.actionHandler;
+	{	
 		// Add a player state, action manager, check the action requested with
 		// the state
 		// and then do it here instead, replace the constants
-
-		if (a.isMine())
-		{
-			if (!player.isMining())
-			{
-				ui.messages.add("Mine in which direction? (esc to cancel)\n");
-				this.redrawAll();
-				player.setMining(true);
-
-			}
-			if (player.isMining())
-			{
-				if (player.isMiningSuccess())
-				{
-
-					if (player.mine())
-					{
-						this.ui.messages
-								.add("You mined through the mountain!\n");
-						player.getLookingAt().setType("road");
-						player.getLookingAt().setPassableFlag(true);
-					}
-					else
-					{
-						this.ui.messages.add("Too hungry to mine..\n");
-
-					}
-					a.setMine(false);
-					player.setMining(false);
-
-				}
-
-			}
-			GameConstants.RENDER_REQUIRED = true;
-		}
-
-		if (a.isDig())
-		{
-			player.dig();
-			a.setDig(false);
-			player.setMovedLastTurn(true);
-		}
-
-		if (a.isBuildRoad())
-		{
-			if (!player.buildRoad())
-			{
-				this.ui.messages.add("Too hungry to make a road..\n");
-				this.redrawAll();
-			}
-			else
-			{
-				this.ui.messages
-						.add("You clear the terrain, creating a road\n");
-				player.setMovedLastTurn(true);
-			}
-			a.setBuildRoad(false);
-		}
-		if (a.isBuildFarm())
-		{
-			String message = player.buildFarm();
-			if (message == "hungerError")
-			{
-				this.ui.messages.add("Too hungry to build a farm, lol\n");
-				this.redrawAll();
-			}
-			else if (message == "noSeeds")
-			{
-				this.ui.messages.add("You need seeds to plant\n");
-				this.redrawAll();
-			}
-			else if (message == "built")
-			{
-				this.ui.messages.add("You built a farm\n");
-				player.setMovedLastTurn(true);
-			}
-			a.setBuildFarm(false);
-		}
-
-		// TODO something about motivation stat, and being too lazy to build a
-		// house
-		if (a.isBuildHouse())
-		{
-			if (!player.buildHouse())
-			{
-				this.ui.messages.add("Too hungry to build a house..\n");
-				this.redrawAll();
-			}
-			else
-			{
-				this.ui.messages.add("You built a house\n");
-				player.setMovedLastTurn(true);
-			}
-			a.setBuildHouse(false);
-		}
-		if (a.isSleep())
-		{
-			String message = player.sleep();
-			if (message == "sleeping")
-			{
-				this.ui.messages.add("Zzz\n");
-				try
-				{
-					Thread.sleep(100);
-				}
-				catch (InterruptedException e)
-				{
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-			else if (message == "tooHungry")
-			{
-				this.ui.messages.add("Too hungry to sleep\n");
-				a.setSleep(false);
-			}
-		}
-
-		if (a.isIncreaseMapSize())
-		{
-			GameConstants.MAP_GENERATOR_COLS += 20;
-			GameConstants.MAP_GENERATOR_ROWS += 20;
-			GameConstants.resetSeedValues();
-			this.ui.messages
-					.add("Increased map size, press (P) to generate new world!"
-							+ GameConstants.MAP_GENERATOR_ROWS + "x"
-							+ GameConstants.MAP_GENERATOR_COLS + ")\n");
-			GameConstants.RENDER_REQUIRED = true;
-			a.setIncreaseMapSize(false);
-		}
-
-		if (a.isDecreaseMapSize())
-		{
-			GameConstants.MAP_GENERATOR_COLS -= 20;
-			GameConstants.MAP_GENERATOR_ROWS -= 20;
-			GameConstants.resetSeedValues();
-			this.ui.messages
-					.add("Decreased map size, press (P) to generate new world!("
-							+ GameConstants.MAP_GENERATOR_ROWS
-							+ "x"
-							+ GameConstants.MAP_GENERATOR_COLS + ")\n");
-			GameConstants.RENDER_REQUIRED = true;
-			a.setDecreaseMapSize(false);
-		}
-
-		if (a.isRegenerateMap())
-		{
-			this.ui.messages
-					.add("---GENERATING WORLD, THIS COULD TAKE A WHILE---\n");
-			this.redrawAll();
-			this.setNewGame(true);
-			a.setRegenerateMap(false);
-		}
+		this.actionHandler.processActions(player);		
 	}
 
 	public void redrawAll()
@@ -398,7 +262,7 @@ public class Game
 		Renderer.renderMap(mapManager.getGameMap(), player);
 
 		// if(GameConstants.DEBUG)
-		// Renderer.renderWin(mapManager.getGameMap());
+		 Renderer.renderWin(mapManager.getGameMap());
 		Renderer.renderPlayer(player);
 		Renderer.renderAllNpc(this.npcArray);
 		this.drawUI();
@@ -480,16 +344,11 @@ public class Game
 	}
 
 	private void wonGame()
-	{
-		GameConstants.RENDER_REQUIRED = true;
-		if (GameConstants.RENDER_REQUIRED)
-		{
-			window.getRenderWindow().clear(new Color(10, 10, 10));
-			Renderer.winScreen(player);
-			drawUI();
-			window.getRenderWindow().display();
-			GameConstants.RENDER_REQUIRED = false;
-		}
+	{		
+		window.getRenderWindow().clear(new Color(10, 10, 10));
+		Renderer.winScreen(player);
+		drawUI();
+		window.getRenderWindow().display();		
 		this.processActions();
 		input.pollDeathKeyEvents(player);
 	}

@@ -54,7 +54,7 @@ public class SFMLInputManager
 			{
 				player.setMovedLastTurn(false);
 				KeyEvent keyEvent = event.asKeyEvent();
-
+				ActionHandler a = this.actionHandler;
 				switch (keyEvent.key)
 				{
 				case ESCAPE:
@@ -62,59 +62,51 @@ public class SFMLInputManager
 					break;
 
 				case UP:
-					player.move("north");
+					a.setMoveNorth(true);					
 					break;
 
 				case DOWN:
-					player.move("south");
+					a.setMoveSouth(true);					
 					break;
 
 				case LEFT:
-					player.move("west");
+					a.setMoveWest(true);					
 					break;
 
 				case RIGHT:
-					player.move("east");
+					a.setMoveEast(true);					
 					break;
 
 				case EQUAL:
-					this.actionHandler.setIncreaseMapSize(true);
+					a.setIncreaseMapSize(true);
 					break;
 
 				case DASH:
-					this.actionHandler.setDecreaseMapSize(true);
+					a.setDecreaseMapSize(true);
 					break;
 
-				case S:
-					if (player.getCurrentTile().getType() == "house")
-						this.actionHandler.setSleep(true);
+				case S:					
+					a.setSleep(true);
 					break;
 
-				case H:
-					if (player.getCurrentTile().getType() != "water"
-							&& player.getCurrentTile().getType() != "house")
-						this.actionHandler.setBuildHouse(true);
+				case H:					
+					a.setBuildHouse(true);
 					break;
 
 				case F:
-					if (player.getCurrentTile().getType() != "water")
-						this.actionHandler.setBuildFarm(true);
+					a.setBuildFarm(true);
 					break;
 
-				case P:
-					if (player.getCurrentTile().getType() != "water"
-							&& player.getCurrentTile().getType() != "road"
-							&& player.getCurrentTile().getType() != "house")
-						this.actionHandler.setBuildRoad(true);
+				case P:					
+					a.setBuildRoad(true);
 					break;
 
-				case D:
-					if (player.getCurrentTile().getType() != "water")
-						this.actionHandler.setDig(true);
+				case D:					
+					a.setDig(true);
 					break;
 
 				case Z:
-					this.actionHandler.setRegenerateMap(true);
+					a.setRegenerateMap(true);
 					break;
 
 				case K:
@@ -122,11 +114,12 @@ public class SFMLInputManager
 					break;
 
 				case M:
-					this.actionHandler.setMine(true);
+					a.setMine(true);
 					break;
 
 				case E:
-					player.eat();
+					a.setEat(true);
+					break;
 
 				default:
 					break;
