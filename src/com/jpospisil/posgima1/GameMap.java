@@ -24,6 +24,12 @@ public class GameMap
 		this.setTilePositions();
 	}
 
+	public boolean checkEntityCollision(Tile tile)
+	{
+		if(tile.getEntities().size() > 0)
+			return true;
+		return false;
+	}
 	public boolean checkTerrainCollision(Tile tile)
 	{
 		if (tile == null)

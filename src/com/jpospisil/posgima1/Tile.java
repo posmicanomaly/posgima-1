@@ -1,9 +1,11 @@
 package com.jpospisil.posgima1;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public class Tile
 {
+	private ArrayList<Entity> entities;
 	private ArrayList<Item>	items;
 	private String			type;
 	private boolean			canPass;
@@ -14,11 +16,34 @@ public class Tile
 
 	public Tile(int x, int y)
 	{
+		entities = new ArrayList<Entity>();
 		items = new ArrayList<Item>();
 		this.x = x;
 		this.y = y;
 	}
 
+	public ArrayList<Entity> getEntities()
+	{
+		return this.entities;
+	}
+	public void addEntity(Entity e)
+	{
+		this.entities.add(e);
+	}
+	public void removeEntity(Entity e)
+	{
+		Iterator<Entity> it = this.entities.iterator();
+		while(it.hasNext())
+		{
+			Entity ent = it.next();
+			if(ent.equals(e))
+			{
+				//System.out.println("removed " + it.toString());
+			
+				it.remove();
+			}
+		}
+	}
 	public void addItem(Item item)
 	{
 		items.add(item);

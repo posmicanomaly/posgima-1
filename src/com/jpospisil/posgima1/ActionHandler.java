@@ -1,6 +1,7 @@
 package com.jpospisil.posgima1;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class ActionHandler
 {
@@ -146,9 +147,69 @@ public class ActionHandler
 		player.eat();
 		this.setEat(false);
 	}
+	public void doCombat(CombatData combatData, boolean silent)
+	{
+		Entity entity1 = combatData.getEntity1();
+		Entity entity2 = combatData.getEntity2();
+		Tile loc = combatData.getLocation();
+		
+		int rand = new Random().nextInt(2);
+		
+		int playerDamage = new Random().nextInt(10);
+		int npcDamage = new Random().nextInt(10);
+		
+		if(rand == 0)
+		{
+			entity1.setHealth(entity1.getHealth() - npcDamage);
+			
+				this.game.ui.messages.add(entity2.getName() + " hit " + entity1.getName() + " for " + npcDamage + " points of damage\n");
+			
+			if(entity1.getHealth() < GameConstants.MINIMUM_HEALTH)
+			{
+				this.game.ui.messages.add(entity1.getName() + " was killed by " + entity2.getName() + "\n");
+				entity1.die();
+				loc.removeEntity(loc.getEntities().get(0));
+				return;
+			}
+			
+			entity2.setHealth(entity2.getHealth() - playerDamage);
+			this.game.ui.messages.add(entity1.getName() + " hit " + entity2.getName() + " for " + playerDamage + " points of damage\n");
+		}
+		else
+		{
+			entity2.setHealth(entity2.getHealth() - playerDamage);
+			this.game.ui.messages.add(entity1.getName() + " hit " + entity2.getName() + " for " + playerDamage + " points of damage\n");
+			
+			if(entity2.getHealth() < GameConstants.MINIMUM_HEALTH)
+			{
+				this.game.ui.messages.add(entity1.getName() + " was killed by " + entity2.getName() + "\n");
+				entity2.die();
+				loc.removeEntity(loc.getEntities().get(0));
+				return;
+			}
+			
+			entity1.setHealth(entity1.getHealth() - npcDamage);
+			this.game.ui.messages.add(entity2.getName() + " hit " + entity1.getName() + " for " + npcDamage + " points of damage\n");
+		}		
+	}
+	public void doNpcMove(Npc npc, Player player)
+	{
+		String message = npc.moveTowards(player);
+		if(message.equals("collision with entity"))
+		{
+			//this.doCombat(npc.combatData, true);
+		}
+	}
 	public void doMove(Player player, String direction)
 	{
-		player.move(direction);
+		String message = player.move(direction);
+		if(message.equals("collision with entity"))
+		{
+			this.doCombat(player.getCombatData(), false);
+		}
+		else if(!message.equals("no collisions"))
+			this.game.ui.messages.add(message + "\n");
+		
 		//set all to false, because don't know which bool we came from
 		this.setMoveEast(false);
 		this.setMoveSouth(false);

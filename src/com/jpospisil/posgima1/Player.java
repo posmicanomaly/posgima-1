@@ -3,24 +3,12 @@ package com.jpospisil.posgima1;
 import java.util.Iterator;
 import java.util.Random;
 
-public class Player
+public class Player extends Entity
 {
 
-	protected Tile		currentTile;
-	private Tile		lookingAt;
-	protected GameMap	currentMap;
-	public boolean		movedLastTurn;
-
-	private String		name;
-	private boolean		alive;
-	private boolean		isMining;
-	private boolean		miningSuccess;
-	private int			moves;
-	private int			digCount;
-	private int			foodCount;
-	private int			seedCount;
-	private int			hungerLevel;
-	private int			health;
+	
+	
+	
 
 	public Player()
 	{
@@ -91,11 +79,7 @@ public class Player
 
 	}
 
-	private void die()
-	{
-		this.alive = false;
-		GameConstants.RENDER_REQUIRED = true;
-	}
+	
 
 	public void dig()
 	{
@@ -137,60 +121,11 @@ public class Player
 		}
 	}
 
-	public GameMap getCurrentMap()
-	{
-		return this.currentMap;
-	}
+	
 
-	public Tile getCurrentTile()
-	{
-		return this.currentTile;
-	}
+	
 
-	public int getDigCount()
-	{
-		return digCount;
-	}
-
-	public int getFoodCount()
-	{
-		return foodCount;
-	}
-
-	public int getHealth()
-	{
-		return health;
-	}
-
-	public int getHungerLevel()
-	{
-		return hungerLevel;
-	}
-
-	public Tile getLookingAt()
-	{
-		return lookingAt;
-	}
-
-	public int getMoves()
-	{
-		return moves;
-	}
-
-	public String getName()
-	{
-		return name;
-	}
-
-	public int getSeedCount()
-	{
-		return seedCount;
-	}
-
-	public boolean isAlive()
-	{
-		return this.alive;
-	}
+	
 
 	public boolean isMining()
 	{
@@ -223,7 +158,7 @@ public class Player
 
 	}
 
-	public boolean move(String direction)
+	public String move(String direction)
 	{
 		Tile nextTile = null;
 		switch (direction)
@@ -249,31 +184,41 @@ public class Player
 			break;
 
 		default:
-			return false;
+			return "invalid direction";
 		}
 		if (nextTile != null)
 		{
-			if (currentMap.checkTerrainCollision(nextTile))
+			if (currentMap.checkTerrainCollision(nextTile) && !currentMap.checkEntityCollision(nextTile))
 			{
 
 				if (nextTile.getType() == "water")
 					this.swim();
+				this.getCurrentTile().removeEntity(this);
 				this.currentTile = nextTile;
+				this.getCurrentTile().addEntity(this);
 				this.setMovedLastTurn(true);
 				this.setMoves(this.getMoves() + 1);
-				return true;
+				return "no collisions";
+			}
+			else if(currentMap.checkEntityCollision(nextTile))
+			{
+				this.combatWithEntity(nextTile.getEntities().get(0), nextTile);
+				this.setMovedLastTurn(true);
+				this.setMoves(this.getMoves() + 1);
+				return "collision with entity";
 			}
 			else
 			{
 				// SFMLUI.messages.add("that " + nextTile.getType() +
 				// " hurt\n");
-				return false;
+				return "collision with " + nextTile.getType();
 			}
 		}
-		return false;
+		return "nextTile is null";
 
 	}
 
+	
 	public void processPlayerRules()
 	{
 		if (!this.alive)
@@ -313,75 +258,7 @@ public class Player
 
 	}
 
-	public void setAlive(boolean alive)
-	{
-		this.alive = alive;
-	}
-
-	public void setCurrentMap(GameMap currentMap)
-	{
-		this.currentMap = currentMap;
-	}
-
-	public void setCurrentTile(Tile tile)
-	{
-		this.currentTile = tile;
-	}
-
-	public void setDigCount(int digCount)
-	{
-		this.digCount = digCount;
-	}
-
-	public void setFoodCount(int foodCount)
-	{
-		this.foodCount = foodCount;
-	}
-
-	public void setHealth(int health)
-	{
-		this.health = health;
-	}
-
-	public void setHungerLevel(int hungerLevel)
-	{
-		this.hungerLevel = hungerLevel;
-	}
-
-	public void setLookingAt(Tile lookingAt)
-	{
-		this.lookingAt = lookingAt;
-	}
-
-	public void setMining(boolean isMining)
-	{
-		this.isMining = isMining;
-	}
-
-	public void setMiningSuccess(boolean miningSuccess)
-	{
-		this.miningSuccess = miningSuccess;
-	}
-
-	public void setMovedLastTurn(boolean b)
-	{
-		this.movedLastTurn = b;
-	}
-
-	public void setMoves(int moves)
-	{
-		this.moves = moves;
-	}
-
-	public void setName(String name)
-	{
-		this.name = name;
-	}
-
-	public void setSeedCount(int seedCount)
-	{
-		this.seedCount = seedCount;
-	}
+	
 
 	public String sleep()
 	{

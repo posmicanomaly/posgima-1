@@ -289,6 +289,7 @@ public class SFMLASCIIRender
 	{
 		for (Npc npc : npcArray)
 		{
+			
 			renderNpc(npc);
 		}
 	}

@@ -1,6 +1,7 @@
 package com.jpospisil.posgima1;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Random;
 
 import org.jsfml.graphics.Color;
@@ -29,30 +30,18 @@ public class Game
 
 	private void processAllNpc()
 	{
+		Iterator<Npc> it = this.npcArray.iterator();
+		while(it.hasNext())
+		{
+			Npc npc = it.next();
+			if(!npc.isAlive())
+				it.remove();
+		}
 		for (Npc npc : this.npcArray)
 		{
-
-			int rand = new Random().nextInt(10);
-			String direction;
-			switch (rand)
-			{
-			case 0:
-				direction = "north";
-				break;
-			case 1:
-				direction = "south";
-				break;
-			case 2:
-				direction = "west";
-				break;
-			case 3:
-				direction = "east";
-				break;
-			default:
-				direction = "stay";
-				break;
-			}
-			npc.move(direction);
+			//npc.wander();
+			this.actionHandler.doNpcMove(npc, player);
+			
 		}
 	}
 	private void determineInputMenu()
@@ -211,15 +200,8 @@ public class Game
 		input.pollDeathKeyEvents(player);
 	}
 
-	private void newGame()
+	private void printNewGameMessage()
 	{
-		ui = new SFMLUI(window, this);
-		this.actionHandler = new ActionHandler(this);
-		GameConstants.won = false;
-		Renderer = new SFMLASCIIRender(window);
-		mapManager = new MapManager();
-		input = new SFMLInputManager(window, this.actionHandler);
-		
 		ui.messages.clear();
 		ui.messages.add("new game\n");
 		ui.messages
@@ -234,6 +216,17 @@ public class Game
 						+ "---------Debug active\n(P) for new map/game\n"
 						+ "(K) to toggle keyrepeat(not recommended)\n"
 						+ "(-) to decrease the map, (=) to increase it, followed by (P) to regenerate(huge maps take a long time to build)\n");
+	}
+	private void newGame()
+	{
+		ui = new SFMLUI(window, this);
+		this.actionHandler = new ActionHandler(this);
+		GameConstants.won = false;
+		Renderer = new SFMLASCIIRender(window);
+		mapManager = new MapManager();
+		input = new SFMLInputManager(window, this.actionHandler);
+		
+		this.printNewGameMessage();
 		// mapManager = new MapManager();
 		setupPlayer();
 		setupWinTile();
@@ -264,6 +257,7 @@ public class Game
 		// if(GameConstants.DEBUG)
 		 Renderer.renderWin(mapManager.getGameMap());
 		Renderer.renderPlayer(player);
+		
 		Renderer.renderAllNpc(this.npcArray);
 		this.drawUI();
 		window.getRenderWindow().display();
