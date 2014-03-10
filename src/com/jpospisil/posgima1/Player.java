@@ -22,7 +22,7 @@ public class Player extends Entity
 		this.foodCount = 0;
 		this.seedCount = 1;
 		this.hungerLevel = 0;
-		this.health = 100;
+		this.health = 1000;
 		this.isMining = false;
 		this.miningSuccess = false;
 

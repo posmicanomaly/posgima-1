@@ -25,7 +25,7 @@ public class Entity {
 	
 	protected void combatWithEntity(Entity e, Tile location)
 	{
-		System.out.println("Combat with " + this.getName() + " and " + e.getName() + " at tile: " + location.toString());
+		//System.out.println("Combat with " + this.getName() + " and " + e.getName() + " at tile: " + location.toString());
 		this.combatData = new CombatData(this, e, location);			
 	}
 	public GameMap getCurrentMap()
