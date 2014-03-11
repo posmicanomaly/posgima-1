@@ -65,10 +65,19 @@ public class Game
 			this.growCrops();
 			this.regenerateDugTerrain();
 			this.processAllNpc();
+			if (this.getHoursElapsed() % 24 * 5 == 0)
+			{
+				Npc npc = new Npc();
+				npc.setCurrentMap(this.mapManager.getGameMap());
+				npc.setCurrentTile(this.mapManager.getGameMap()
+						.getRandomFoodWorthyTile());
+				this.npcArray.add(npc);
+			}
 			
 			GameConstants.RENDER_REQUIRED = true;
-
 		}
+		
+			
 	}
 	private void continueGame()
 	{

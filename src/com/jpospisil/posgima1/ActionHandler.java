@@ -147,7 +147,7 @@ public class ActionHandler
 		player.eat();
 		this.setEat(false);
 	}
-	public void doCombat(CombatData combatData, boolean silent)
+	public void doPlayerCombat(CombatData combatData, boolean silent)
 	{
 		Entity entity1 = combatData.getEntity1();
 		Entity entity2 = combatData.getEntity2();
@@ -167,7 +167,7 @@ public class ActionHandler
 			if(entity1.getHealth() < GameConstants.MINIMUM_HEALTH)
 			{
 				this.game.ui.messages.add(entity1.getName() + " was killed by " + entity2.getName() + "\n");
-				entity1.die();
+				((Player) entity1).die();
 				loc.removeEntity(loc.getEntities().get(0));
 				return;
 			}
@@ -182,8 +182,8 @@ public class ActionHandler
 			
 			if(entity2.getHealth() < GameConstants.MINIMUM_HEALTH)
 			{
-				this.game.ui.messages.add(entity1.getName() + " was killed by " + entity2.getName() + "\n");
-				entity2.die();
+				this.game.ui.messages.add(entity2.getName() + " was killed by " + entity1.getName() + "\n");
+				((Npc) entity2).die(entity1);
 				loc.removeEntity(loc.getEntities().get(0));
 				return;
 			}
@@ -205,7 +205,7 @@ public class ActionHandler
 		String message = player.move(direction);
 		if(message.equals("collision with entity"))
 		{
-			this.doCombat(player.getCombatData(), false);
+			this.doPlayerCombat(player.getCombatData(), false);
 		}
 		else if(!message.equals("no collisions"))
 			this.game.ui.messages.add(message + "\n");

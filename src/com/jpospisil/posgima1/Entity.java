@@ -145,12 +145,7 @@ public class Entity {
 	{
 		this.seedCount = seedCount;
 	}
-	protected void die()
-	{
-		System.out.println(this.getName() + " died");
-		this.alive = false;
-		GameConstants.RENDER_REQUIRED = true;
-	}
+	
 	public boolean isAlive()
 	{
 		return this.alive;

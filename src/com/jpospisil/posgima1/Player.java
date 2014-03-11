@@ -29,7 +29,12 @@ public class Player extends Entity
 		this.alive = true;
 		// TODO Auto-generated constructor stub
 	}
-
+	public void die()
+	{
+		System.out.println(this.getName() + " died(pc)");
+		this.alive = false;
+		GameConstants.RENDER_REQUIRED = true;
+	}
 	public String buildFarm()
 	{
 		if (this.getSeedCount() > 0)

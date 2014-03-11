@@ -7,9 +7,13 @@ public class Npc extends Entity
 {
 	private boolean stuckAggro;
 	private ArrayList<Tile> tileHistory;
+	private ArrayList<Item> items;
 	
 	public Npc()
 	{
+		this.items = new ArrayList<Item>();
+		for(int i = 0; i < 5; ++i)
+			items.add(new Item("food"));
 		this.name = "npc";
 		this.setHealth(20);
 		this.setAlive(true);
@@ -141,6 +145,13 @@ public class Npc extends Entity
 		}
 		return "faslse";
 
+	}
+	public void die(Entity killer)
+	{
+		System.out.println(this.getName() + " died(npc)");
+		killer.setFoodCount(killer.getFoodCount() + this.items.size());
+		this.alive = false;
+		GameConstants.RENDER_REQUIRED = true;
 	}
 	
 }
