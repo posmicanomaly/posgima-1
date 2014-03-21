@@ -147,6 +147,26 @@ public class ActionHandler
 		player.eat();
 		this.setEat(false);
 	}
+	private String combatHitMessage(Entity attacker, Entity defender, int damage)
+	{
+		String message = "";
+		message = attacker.getName() + " hit " + defender.getName() + " for " + damage + " points of damage(combatMessage())\n";
+		return message;
+	}
+	private String combatKilledMessage(Entity attacker, Entity defender)
+	{
+		String message;
+		message = defender.getName() + " was killed by " + attacker.getName() + "\n";
+		return message;
+	}
+	private boolean combatCheckDeath(Entity defender)
+	{
+		if(defender.getHealth() < GameConstants.MINIMUM_HEALTH)
+		{
+			return true;
+		}
+		return false;
+	}
 	public void doPlayerCombat(CombatData combatData, boolean silent)
 	{
 		Entity entity1 = combatData.getEntity1();
@@ -162,34 +182,34 @@ public class ActionHandler
 		{
 			entity1.setHealth(entity1.getHealth() - npcDamage);
 			
-				this.game.ui.messages.add(entity2.getName() + " hit " + entity1.getName() + " for " + npcDamage + " points of damage\n");
+				this.game.ui.messages.add(this.combatHitMessage(entity2, entity1, npcDamage));
 			
-			if(entity1.getHealth() < GameConstants.MINIMUM_HEALTH)
+			if(this.combatCheckDeath(entity1))
 			{
-				this.game.ui.messages.add(entity1.getName() + " was killed by " + entity2.getName() + "\n");
+				this.game.ui.messages.add(this.combatKilledMessage(entity2, entity1));
 				((Player) entity1).die();
 				loc.removeEntity(loc.getEntities().get(0));
 				return;
 			}
 			
 			entity2.setHealth(entity2.getHealth() - playerDamage);
-			this.game.ui.messages.add(entity1.getName() + " hit " + entity2.getName() + " for " + playerDamage + " points of damage\n");
+			this.game.ui.messages.add(this.combatHitMessage(entity1, entity2, playerDamage));
 		}
 		else
 		{
 			entity2.setHealth(entity2.getHealth() - playerDamage);
-			this.game.ui.messages.add(entity1.getName() + " hit " + entity2.getName() + " for " + playerDamage + " points of damage\n");
+			this.game.ui.messages.add(this.combatHitMessage(entity1, entity2, playerDamage));
 			
-			if(entity2.getHealth() < GameConstants.MINIMUM_HEALTH)
+			if(this.combatCheckDeath(entity2))
 			{
-				this.game.ui.messages.add(entity2.getName() + " was killed by " + entity1.getName() + "\n");
+				this.game.ui.messages.add(this.combatKilledMessage(entity1, entity2));
 				((Npc) entity2).die(entity1);
 				loc.removeEntity(loc.getEntities().get(0));
 				return;
 			}
 			
 			entity1.setHealth(entity1.getHealth() - npcDamage);
-			this.game.ui.messages.add(entity2.getName() + " hit " + entity1.getName() + " for " + npcDamage + " points of damage\n");
+			this.game.ui.messages.add(this.combatHitMessage(entity2, entity1, npcDamage));
 		}		
 	}
 	public void doNpcMove(Npc npc, Player player)
@@ -290,15 +310,15 @@ public class ActionHandler
 		if (message == "sleeping")
 		{
 			this.game.ui.messages.add("Zzz\n");
-			try
-			{
-				Thread.sleep(100);
-			}
-			catch (InterruptedException e)
-			{
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+//			try
+//			{
+//				Thread.sleep(100);
+//			}
+//			catch (InterruptedException e)
+//			{
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
 		}
 		else if (message == "tooHungry")
 		{
