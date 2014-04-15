@@ -1,12 +1,14 @@
 Java 7 and Visual C++ 2010 runtime required. JSFML.jar is in lib
 <a href="http://i.imgur.com/MUMPfOs.png"><img src="http://i.imgur.com/MUMPfOs.png" title="Hosted by imgur.com" /></a>
-Posgima 1 is a "one page game" which means I planned it on a single page while at work, written in Java to explore and improve my programming skills. This version is basically final, with only refactoring and possibly improving existing features. I purposely kept it simple to just have something finished, as I had always tried to make a game, but was hindered by lack of skills and poor planning. In the future I hope to leverage this project into Posgima 2, which will improve upon the design.
+Posgima-1 is a turn based RPG written in Java, using JSFML. Graphics are represented as Unicode characters. This is an ongoing exercise for my personal learning, a platform for devising and testing concepts related to programming and making games in general.
 
 This project utilizes JSFML as a library for graphics and event handing.<br>
-Worlds are randomly generated, and cannot be saved or loaded at a later time.<br>
+Worlds are randomly generated, and cannot be saved or loaded at a later time yet.<br>
 
 
 Objective:<br>
+<h1>The following information is outdated</h1><br>
+<h3>I will rewrite at a later date</h3><br>
 You are stranded alone in an unknown land. Your goal is to survive and find the buried artifact.<br>
 
 Health starts at 100, if below 0 you will die. It goes down when hunger is at it's maximum.<br>
